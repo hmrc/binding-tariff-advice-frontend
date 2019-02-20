@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 
+import akka.stream.Materializer
 import org.scalatest.Matchers
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
@@ -27,25 +28,27 @@ import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.play.test.UnitSpec
 
 
-class HelloWorldControllerSpec extends UnitSpec with Matchers with GuiceOneAppPerSuite {
+class IndexControllerControllerSpec extends UnitSpec with Matchers with GuiceOneAppPerSuite {
 
   private val fakeRequest = FakeRequest("GET", "/")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
   private val messageApi = new DefaultMessagesApi(env, configuration, new DefaultLangs(configuration))
   private val appConfig = new AppConfig(configuration, env)
-  private val controller = new HelloWorld(messageApi, appConfig)
+  private implicit val mat: Materializer = fakeApplication.materializer
+  private val controller = new IndexController(messageApi, appConfig)
 
   "GET /" should {
     "return 200" in {
-      val result = controller.helloWorld(fakeRequest)
+      val result = await(controller.get(fakeRequest))
       status(result) shouldBe Status.OK
     }
 
     "return HTML" in {
-      val result = controller.helloWorld(fakeRequest)
+      val result = await(controller.get(fakeRequest))
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
+      bodyOf(result) should include("index-heading")
     }
 
   }
