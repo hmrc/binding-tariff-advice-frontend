@@ -19,5 +19,18 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = "Hello from binding-tariff-advice-frontend", bodyClasses = None) {
-    <h1>Hello from binding-tariff-advice-frontend !</h1>
+ <h1 id="index-heading">@messages("index.heading")</h1>
+
+ <p>@messages("index.content0")</p>
+
+ <ul class="list list-bullet">
+  <li>@messages("index.content1")</li>
+  <li>@messages("index.content2")</li>
+  <li>@messages("index.content3")</li>
+  <li>@messages("index.content4")</li>
+ </ul>
+
+ <p>@messages("index.content5")</p>
+
+ <a id="index-button" class="button" href="#">@messages("index.button")</a>
 }
