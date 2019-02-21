@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.bindingtariffadvicefrontend.controllers
+package uk.gov.hmrc.bindingtariffadvicefrontend.repository
 
+import com.google.inject.ImplementedBy
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.views
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.modules.reactivemongo.ReactiveMongoComponent
+import reactivemongo.api.DB
 
-import scala.concurrent.Future
+@ImplementedBy(classOf[MongoDb])
+trait MongoDbProvider {
+  def mongo: () => DB
+}
 
 @Singleton
-class IndexController @Inject()(override val messagesApi: MessagesApi,
-                                implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
-
-  def get: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.index()))
-  }
-
+class MongoDb @Inject()(component: ReactiveMongoComponent)  extends MongoDbProvider {
+  override val mongo: () => DB = component.mongoConnector.db
 }
