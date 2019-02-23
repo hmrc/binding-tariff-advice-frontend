@@ -32,7 +32,6 @@ supporting_documents.content4 = lists of materials
 supporting_documents.content5 = images of the item
 supporting_documents.content6 = images of packaging
 supporting_documents.form.state1 = Upload a file?
-supporting_documents.form.state2 = Upload a file?
 supporting_documents.button = Continue
 
 upload_supporting_documents.heading = Upload any supporting photographs and documents
@@ -42,6 +41,14 @@ upload_supporting_documents.content3 = a pdf, doc, docx, png, jpg, jpeg or txt f
 upload_supporting_documents.content4 = 10MB or smaller
 upload_supporting_documents.form.file = Upload files
 upload_supporting_documents.button = Upload
+
+supporting_information.heading = Do you need to enter any other supporting information?
+supporting_information.form.state = Select yes if you want to enter any supporting information
+supporting_information.button = Continue
+
+supporting_information_details.heading = What is the information you want to provide?
+supporting_information_details.form.value =
+supporting_information_details.button = Continue
 
 
 session_expired.heading = For your security, this service has been reset

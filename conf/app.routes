@@ -1,21 +1,27 @@
 # microservice specific routes
 
-GET        /assets/*file                controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file                    controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /                            @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.IndexController.get
-GET        /session-expired             @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SessionExpiredController.get
+GET        /                                @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.IndexController.get
+GET        /session-expired                 @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SessionExpiredController.get
 
 
-GET        /contact-details             @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.ContactDetailsController.get
-POST       /contact-details             @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.ContactDetailsController.post
+GET        /contact-details                 @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.ContactDetailsController.get
+POST       /contact-details                 @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.ContactDetailsController.post
 
-GET        /good-details                @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.get
-POST       /good-details                @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.post
+GET        /good-details                    @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.get
+POST       /good-details                    @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.post
 
-GET        /supporting-documents        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.get
-POST       /supporting-documents        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.post
+GET        /supporting-documents            @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.get
+POST       /supporting-documents            @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.post
 
-GET       /supporting-documents/:id    @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.delete(id: String)
+GET        /supporting-documents/:id        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.delete(id: String)
 
-GET        /upload-supporting-documents        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.get
-POST       /upload-supporting-documents        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.post
+GET        /upload-supporting-documents     @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.get
+POST       /upload-supporting-documents     @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.post
+
+GET        /supporting-information          @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingInformationController.get
+POST       /supporting-information          @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingInformationController.post
+
+GET        /supporting-information-details  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingInformationDetailsController.get
+POST       /supporting-information-details  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingInformationDetailsController.post

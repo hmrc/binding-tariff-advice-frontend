@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{RequireSessionAction, RetrieveAnswersAction}
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.BooleanForm
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.TextForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 import uk.gov.hmrc.bindingtariffadvicefrontend.views
@@ -32,32 +32,28 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class SupportingDocumentsController @Inject()(requireSession: RequireSessionAction,
-                                              retrieveAnswers: RetrieveAnswersAction,
-                                              adviceService: AdviceService,
-                                              override val messagesApi: MessagesApi,
-                                              implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
+class SupportingInformationDetailsController @Inject()(requireSession: RequireSessionAction,
+                                                       retrieveAnswers: RetrieveAnswersAction,
+                                                       adviceService: AdviceService,
+                                                       override val messagesApi: MessagesApi,
+                                                       implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    Future.successful(Ok(views.html.supporting_documents(BooleanForm.form.fill(false))))
+    val form: Form[String] = request.advice.supportingInformation.map(TextForm.form.fill).getOrElse(TextForm.form)
+    Future.successful(Ok(views.html.supporting_information_details(form)))
   }
 
   def post: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    def onError: Form[Boolean] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.supporting_documents(formWithErrors)))
+    def onError: Form[String] => Future[Result] = formWithErrors => {
+        Future.successful(Ok(views.html.supporting_information_details(formWithErrors)))
     }
 
-    def onSuccess: Boolean => Future[Result] = {
-      case true => Future.successful(Redirect(routes.UploadSupportingDocumentsController.get()))
-      case false => Future.successful(Redirect(routes.SupportingInformationController.get()))
+    def onSuccess: String => Future[Result] = supportingInformation => {
+        val updated = request.advice.copy(supportingInformation = Some(supportingInformation))
+        adviceService.update(updated).map(_ => Redirect(routes.SupportingInformationDetailsController.get()))
     }
 
-    BooleanForm.form.bindFromRequest.fold(onError, onSuccess)
-  }
-
-  def delete(id: String): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    val advice = request.advice.copy(supportingDocuments = request.advice.supportingDocuments.filterNot(_.id == id))
-    adviceService.update(advice).map(_ => Redirect(routes.SupportingDocumentsController.get()))
+    TextForm.form.bindFromRequest.fold(onError, onSuccess)
   }
 
 }

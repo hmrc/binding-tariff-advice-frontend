@@ -29,7 +29,7 @@ import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 import scala.concurrent.Future
 
-class SupportingDocumentsControllerTest extends ControllerSpec {
+class SupportingInformationControllerTest extends ControllerSpec {
 
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
@@ -38,7 +38,7 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
   private val service = mock[AdviceService]
   private implicit val mat: Materializer = fakeApplication.materializer
 
-  private def controller(advice: Advice) = new SupportingDocumentsController(
+  private def controller(advice: Advice) = new SupportingInformationController(
     ActiveSession("id"),
     ExistingAnswers(advice),
     service,
@@ -54,7 +54,7 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
-      bodyOf(result) should include("supporting_documents-heading")
+      bodyOf(result) should include("supporting_information-heading")
     }
   }
 
@@ -65,7 +65,7 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
       val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "true")
       val result = await(controller(advice).post(request))
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.UploadSupportingDocumentsController.get().url)
+      locationOf(result) shouldBe Some(routes.SupportingInformationDetailsController.get().url)
     }
 
     "return 303 and redirect on valid form - with answer 'No'" in {
@@ -82,34 +82,9 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
-      bodyOf(result) should include("supporting_documents-heading")
+      bodyOf(result) should include("supporting_information-heading")
       bodyOf(result) should include("error-summary")
     }
-  }
-
-  "DELETE /id" should {
-    val document = SupportingDocument("id", "name", "type", 0)
-
-    "return 303 and redirect on valid id" in {
-      given(service.update(Advice("id"))) willReturn Future.successful(mock[Advice])
-
-      val advice = Advice("id", supportingDocuments = Seq(document))
-      val result = await(controller(advice).delete("id")(deleteRequestWithCSRF))
-
-      status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get().url)
-    }
-
-    "return 303 and redirect on invalid id" in {
-      val advice = Advice("id", supportingDocuments = Seq(document))
-      given(service.update(advice)) willReturn Future.successful(mock[Advice])
-
-      val result = await(controller(advice).delete("other-id")(deleteRequestWithCSRF))
-
-      status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get().url)
-    }
-
   }
 
 }

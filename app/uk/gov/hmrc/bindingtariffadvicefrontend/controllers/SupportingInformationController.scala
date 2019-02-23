@@ -32,32 +32,27 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class SupportingDocumentsController @Inject()(requireSession: RequireSessionAction,
-                                              retrieveAnswers: RetrieveAnswersAction,
-                                              adviceService: AdviceService,
-                                              override val messagesApi: MessagesApi,
-                                              implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
+class SupportingInformationController @Inject()(requireSession: RequireSessionAction,
+                                                retrieveAnswers: RetrieveAnswersAction,
+                                                adviceService: AdviceService,
+                                                override val messagesApi: MessagesApi,
+                                                implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    Future.successful(Ok(views.html.supporting_documents(BooleanForm.form.fill(false))))
+    Future.successful(Ok(views.html.supporting_information(BooleanForm.form.fill(false))))
   }
 
   def post: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
     def onError: Form[Boolean] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.supporting_documents(formWithErrors)))
+        Future.successful(Ok(views.html.supporting_information(formWithErrors)))
     }
 
     def onSuccess: Boolean => Future[Result] = {
-      case true => Future.successful(Redirect(routes.UploadSupportingDocumentsController.get()))
+      case true => Future.successful(Redirect(routes.SupportingInformationDetailsController.get()))
       case false => Future.successful(Redirect(routes.SupportingInformationController.get()))
     }
 
     BooleanForm.form.bindFromRequest.fold(onError, onSuccess)
-  }
-
-  def delete(id: String): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    val advice = request.advice.copy(supportingDocuments = request.advice.supportingDocuments.filterNot(_.id == id))
-    adviceService.update(advice).map(_ => Redirect(routes.SupportingDocumentsController.get()))
   }
 
 }
