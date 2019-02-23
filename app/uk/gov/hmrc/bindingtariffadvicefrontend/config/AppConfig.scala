@@ -43,4 +43,7 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
   lazy val emailUrl: String = baseUrl("email")
   lazy val fileStoreUrl: String = baseUrl("binding-tariff-filestore")
   lazy val mongoTTL: Duration = getDuration("mongodb.ttl")
+  lazy val fileUploadMaxSize: Long = loadConfig("upload.max-size").toInt
+  lazy val fileUploadMimeTypes: Seq[String] = loadConfig("upload.mime-types").split(",").map(_.trim)
+
 }

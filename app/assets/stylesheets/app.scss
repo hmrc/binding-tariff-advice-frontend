@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'file-list';
 
 .mt-1 {
   margin-top: ($spacer * .25);
@@ -31,3 +32,12 @@
 .mb-4 {
   margin-bottom: $spacer;
 }
+
+w-15 {
+  width: 15%;
+}
+
+w-50 {
+  width: 50%;
+}
+

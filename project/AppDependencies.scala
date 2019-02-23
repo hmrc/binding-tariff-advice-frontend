@@ -10,6 +10,8 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "play-json-union-formatter"  % "1.5.0",
     "uk.gov.hmrc"             %% "simple-reactivemongo"       % "7.12.0-play-25",
     "io.megl"                 %% "play-json-extra"            % "2.4.3",
+    "org.apache.httpcomponents"   %  "httpclient"                 % "4.5.7",
+    "org.apache.httpcomponents"   %  "httpmime"                   % "4.5.7",
     "commons-validator"       % "commons-validator"           % "1.6"
   )
 

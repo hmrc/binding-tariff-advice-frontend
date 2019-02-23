@@ -28,6 +28,7 @@ import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 import uk.gov.hmrc.bindingtariffadvicefrontend.views
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
@@ -47,11 +48,16 @@ class SupportingDocumentsController @Inject()(requireSession: RequireSessionActi
     }
 
     def onSuccess: Boolean => Future[Result] = {
-      case true => Future.successful(Redirect(routes.IndexController.get()))
+      case true => Future.successful(Redirect(routes.UploadSupportingDocumentsController.get()))
       case false => Future.successful(Redirect(routes.IndexController.get()))
     }
 
     BooleanForm.form.bindFromRequest.fold(onError, onSuccess)
+  }
+
+  def delete(id: String): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+    val advice = request.advice.copy(supportingDocuments = request.advice.supportingDocuments.filterNot(_.id == id))
+    adviceService.update(advice).map(_ => Redirect(routes.SupportingDocumentsController.get()))
   }
 
 }

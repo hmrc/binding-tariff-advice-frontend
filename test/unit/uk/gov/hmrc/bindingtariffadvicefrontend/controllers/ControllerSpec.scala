@@ -40,6 +40,12 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
     FakeRequest("GET", "/", FakeHeaders(), AnyContentAsEmpty, tags = csrfTags)
   }
 
+  protected def deleteRequestWithCSRF: FakeRequest[AnyContentAsEmpty.type] = {
+    val tokenProvider: TokenProvider = fakeApplication().injector.instanceOf[TokenProvider]
+    val csrfTags = Map(Token.NameRequestTag -> "csrfToken", Token.RequestTag -> tokenProvider.generateToken)
+    FakeRequest("DELETE", "/", FakeHeaders(), AnyContentAsEmpty, tags = csrfTags)
+  }
+
   protected def postRequestWithCSRF: FakeRequest[AnyContentAsEmpty.type] = {
     val tokenProvider: TokenProvider = fakeApplication().injector.instanceOf[TokenProvider]
     val csrfTags = Map(Token.NameRequestTag -> "csrfToken", Token.RequestTag -> tokenProvider.generateToken)

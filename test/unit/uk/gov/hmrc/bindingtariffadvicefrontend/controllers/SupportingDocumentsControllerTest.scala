@@ -17,16 +17,14 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 
 import akka.stream.Materializer
-import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
-import org.mockito.stubbing.Answer
 import play.api.http.Status
 import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
 import play.api.test.Helpers.{charset, contentType, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers}
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, SupportingDocument}
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 import scala.concurrent.Future
@@ -63,8 +61,15 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
   "POST /" should {
     val advice = Advice("id")
 
-    "return 200 and redirect on valid form" in {
+    "return 303 and redirect on valid form - with answer 'Yes'" in {
       val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "true")
+      val result = await(controller(advice).post(request))
+      status(result) shouldBe Status.SEE_OTHER
+      locationOf(result) shouldBe Some(routes.UploadSupportingDocumentsController.get().url)
+    }
+
+    "return 303 and redirect on valid form - with answer 'No'" in {
+      val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "false")
       val result = await(controller(advice).post(request))
       status(result) shouldBe Status.SEE_OTHER
       locationOf(result) shouldBe Some(routes.IndexController.get().url)
@@ -80,6 +85,31 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
       bodyOf(result) should include("supporting_documents-heading")
       bodyOf(result) should include("error-summary")
     }
+  }
+
+  "DELETE /id" should {
+    val document = SupportingDocument("id", "name", "type", 0)
+
+    "return 303 and redirect on valid id" in {
+      given(service.update(Advice("id"))) willReturn Future.successful(mock[Advice])
+
+      val advice = Advice("id", supportingDocuments = Seq(document))
+      val result = await(controller(advice).delete("id")(deleteRequestWithCSRF))
+
+      status(result) shouldBe Status.SEE_OTHER
+      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get().url)
+    }
+
+    "return 303 and redirect on invalid id" in {
+      val advice = Advice("id", supportingDocuments = Seq(document))
+      given(service.update(advice)) willReturn Future.successful(mock[Advice])
+
+      val result = await(controller(advice).delete("other-id")(deleteRequestWithCSRF))
+
+      status(result) shouldBe Status.SEE_OTHER
+      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get().url)
+    }
+
   }
 
 }

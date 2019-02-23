@@ -25,7 +25,8 @@ case class Advice
 (
   id: String,
   contactDetails: Option[ContactDetails] = None,
-  goodDetails: Option[GoodDetails] = None
+  goodDetails: Option[GoodDetails] = None,
+  supportingDocuments: Seq[SupportingDocument] = Seq.empty
 )
 
 object Advice {

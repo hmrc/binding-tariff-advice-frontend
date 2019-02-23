@@ -14,3 +14,8 @@ POST       /good-details                @uk.gov.hmrc.bindingtariffadvicefrontend
 
 GET        /supporting-documents        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.get
 POST       /supporting-documents        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.post
+
+GET       /supporting-documents/:id    @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.delete(id: String)
+
+GET        /upload-supporting-documents        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.get
+POST       /upload-supporting-documents        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.post

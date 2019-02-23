@@ -35,8 +35,19 @@ supporting_documents.form.state1 = Upload a file?
 supporting_documents.form.state2 = Upload a file?
 supporting_documents.button = Continue
 
+upload_supporting_documents.heading = Upload any supporting photographs and documents
+upload_supporting_documents.content1 = You can upload one file at a time
+upload_supporting_documents.content2 = Each file must be:
+upload_supporting_documents.content3 = a pdf, doc, docx, png, jpg, jpeg or txt file
+upload_supporting_documents.content4 = 10MB or smaller
+upload_supporting_documents.form.file = Upload files
+upload_supporting_documents.button = Upload
+
+
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = To start a new advice request click the button below
 session_expired.link = Start again
 
 error.summary.title = There is a problem
+
+site.back = Back

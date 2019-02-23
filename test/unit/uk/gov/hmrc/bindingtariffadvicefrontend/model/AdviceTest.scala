@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 class AdviceTest extends UnitSpec {
 
   private val advice = Advice(id = "id")
-  private val json = Json.obj("id" -> "id")
+  private val json = Json.obj("id" -> "id", "supportingDocuments" -> JsArray())
 
   "Advice" should {
     "Convert to JSON" in {

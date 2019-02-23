@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.bindingtariffadvicefrontend
+package uk.gov.hmrc.bindingtariffadvicefrontend.model
 
-import scala.io.Source
+import play.api.libs.json.{Json, OFormat}
 
-trait ResourceFiles {
+case class FileUploadTemplate(id: String, href: String, fields: Map[String, String])
 
-  protected def fromResource(path: String): String = {
-    val url = getClass.getClassLoader.getResource(path)
-    Source.fromURL(url, "UTF-8").getLines().mkString
-  }
-
+object FileUploadTemplate {
+  implicit val format: OFormat[FileUploadTemplate] = Json.format[FileUploadTemplate]
 }

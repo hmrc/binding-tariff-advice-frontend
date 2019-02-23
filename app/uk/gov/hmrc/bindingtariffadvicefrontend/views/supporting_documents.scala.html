@@ -19,11 +19,20 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.forms.input_radiogroup
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.forms.error_summary
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.forms.RadioOption
-@(form: Form[Boolean])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@import uk.gov.hmrc.bindingtariffadvicefrontend.model.FileUploaded
+@import uk.gov.hmrc.bindingtariffadvicefrontend.views.ViewUtils
+@import uk.gov.hmrc.bindingtariffadvicefrontend.model.SupportingDocument
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers._
+@import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.back_link
+@(form: Form[Boolean])(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = "Binding Tariff Advice", bodyClasses = None) {
 
- @helper.form(action = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes.SupportingDocumentsController.post()) {
+ @helper.form(action = routes.SupportingDocumentsController.post()) {
+
+  @back_link()
 
   @error_summary(form.errors)
 
@@ -36,6 +45,22 @@
    <li>@messages("supporting_documents.content5")</li>
    <li>@messages("supporting_documents.content6")</li>
   </ul>
+
+  @if(request.advice.supportingDocuments.nonEmpty) {
+   <table id="supporting_documents-file_table" class="mb-4">
+    <tbody>
+     @for((file: SupportingDocument, index: Int) <- request.advice.supportingDocuments.zipWithIndex) {
+      <tr id="supporting_documents-file_table-row-@{index}">
+       <td id="supporting_documents-file_table-row-@{index}-title" class="file_list__td">@{file.fileName}</td>
+       <td id="supporting_documents-file_table-row-@{index}-size" class="file_list__td">@ViewUtils.humanReadableSize(file.size)</td>
+       <td class="file_list__td w-15">
+        <a id="supporting_documents-file_table-row-@{index}-remove_link" class="remove" href="@routes.SupportingDocumentsController.delete(file.id)">Remove</a>
+       </td>
+      </tr>
+     }
+    </tbody>
+   </table>
+  }
 
   @helper.CSRF.formField
 

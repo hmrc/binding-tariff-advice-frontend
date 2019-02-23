@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.bindingtariffadvicefrontend
+package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms
 
-import scala.io.Source
+import play.api.data.Form
+import play.api.data.Forms._
 
-trait ResourceFiles {
+object FileForm {
 
-  protected def fromResource(path: String): String = {
-    val url = getClass.getClassLoader.getResource(path)
-    Source.fromURL(url, "UTF-8").getLines().mkString
-  }
+  val form: Form[String] = Form[String](
+    mapping[String, String](
+      "file" -> nonEmptyText
+    )(identity)(Some(_))
+  )
 
 }

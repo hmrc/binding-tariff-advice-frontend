@@ -17,17 +17,30 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.service
 
 import javax.inject.Inject
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
+import play.api.libs.Files.TemporaryFile
+import uk.gov.hmrc.bindingtariffadvicefrontend.connector.{FileStoreConnector, UpscanS3Connector}
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, FileUpload, FileUploaded}
 import uk.gov.hmrc.bindingtariffadvicefrontend.repository.AdviceRepository
+import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
-class AdviceService @Inject()(repository: AdviceRepository) {
+class AdviceService @Inject()(repository: AdviceRepository,
+                              fileStoreConnector: FileStoreConnector,
+                              upscanS3Connector: UpscanS3Connector) {
 
   def get(id: String): Future[Option[Advice]] = repository.get(id)
 
   def insert (advice: Advice): Future[Advice] = repository.insert(advice)
 
   def update(advice: Advice): Future[Advice] = repository.update(advice)
+
+  def upload(metadata: FileUpload, file: TemporaryFile)(implicit hc: HeaderCarrier): Future[FileUploaded] = {
+    for {
+      template <- fileStoreConnector.initiate(metadata)
+      _ <- upscanS3Connector.upload(template, file)
+    } yield FileUploaded(id = template.id, metadata.fileName, mimeType =  metadata.mimeType)
+  }
 
 }
