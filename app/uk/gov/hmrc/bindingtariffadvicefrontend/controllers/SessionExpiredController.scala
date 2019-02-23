@@ -26,11 +26,11 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.Future
 
 @Singleton
-class IndexController @Inject()(override val messagesApi: MessagesApi,
-                                implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
+class SessionExpiredController @Inject()(override val messagesApi: MessagesApi,
+                                         implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   def get: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.index()))
+    Future.successful(Ok(views.html.session_expired()))
   }
 
 }

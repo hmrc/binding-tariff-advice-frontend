@@ -28,7 +28,7 @@ import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.play.test.UnitSpec
 
 
-class IndexControllerControllerSpec extends UnitSpec with Matchers with GuiceOneAppPerSuite {
+class SessionExpiredControllerSpec extends UnitSpec with GuiceOneAppPerSuite {
 
   private val fakeRequest = FakeRequest("GET", "/")
   private val env = Environment.simple()
@@ -36,7 +36,7 @@ class IndexControllerControllerSpec extends UnitSpec with Matchers with GuiceOne
   private val messageApi = new DefaultMessagesApi(env, configuration, new DefaultLangs(configuration))
   private val appConfig = new AppConfig(configuration, env)
   private implicit val mat: Materializer = fakeApplication.materializer
-  private val controller = new IndexController(messageApi, appConfig)
+  private val controller = new SessionExpiredController(messageApi, appConfig)
 
   "GET /" should {
     "return 200" in {
@@ -48,7 +48,7 @@ class IndexControllerControllerSpec extends UnitSpec with Matchers with GuiceOne
       val result = await(controller.get(fakeRequest))
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
-      bodyOf(result) should include("index-heading")
+      bodyOf(result) should include("session_expired-heading")
     }
 
   }

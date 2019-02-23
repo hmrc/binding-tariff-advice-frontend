@@ -16,9 +16,13 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.config
 
+import java.util.concurrent.TimeUnit
+
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.concurrent.duration.FiniteDuration
 
 class AppConfigTest extends UnitSpec with GuiceOneAppPerSuite {
 
@@ -62,5 +66,9 @@ class AppConfigTest extends UnitSpec with GuiceOneAppPerSuite {
       "microservice.services.binding-tariff-filestore.host" -> "www.host.co.uk",
       "microservice.services.binding-tariff-filestore.port" -> "123"
     ).fileStoreUrl shouldBe "https://www.host.co.uk:123"
+  }
+
+  "Build 'Mongo TTL'" in {
+    appConfig("mongodb.ttl" -> "1h").mongoTTL shouldBe FiniteDuration(1, TimeUnit.HOURS)
   }
 }
