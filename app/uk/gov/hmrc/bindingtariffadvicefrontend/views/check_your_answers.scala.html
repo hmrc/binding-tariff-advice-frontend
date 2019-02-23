@@ -34,10 +34,16 @@
      <tr>
       <th>@messages("check_your_answers.section1.sub_heading1")</th>
       <td id="check_your_answers-contact_details-name">@advice.contactDetails.map(_.fullName).getOrElse("")</td>
+      <td id="check_your_answers-contact_details-name-change" class="change">
+       <a href="@controllers.routes.ContactDetailsController.get()">Change</a>
+      </td>
      </tr>
      <tr>
       <th>@messages("check_your_answers.section1.sub_heading2")</th>
       <td id="check_your_answers-contact_details-email">@advice.contactDetails.map(_.email).getOrElse("")</td>
+      <td id="check_your_answers-contact_details-email-change" class="change">
+       <a href="@controllers.routes.ContactDetailsController.get()">Change</a>
+      </td>
      </tr>
     </tbody>
    </table>
@@ -51,10 +57,16 @@
     <tr>
      <th>@messages("check_your_answers.section2.sub_heading1")</th>
      <td id="check_your_answers-good_details-name">@advice.goodDetails.map(_.itemName).getOrElse("")</td>
+     <td id="check_your_answers-good_details-name-change" class="change">
+      <a href="@controllers.routes.GoodDetailsController.get()">Change</a>
+     </td>
     </tr>
     <tr>
      <th>@messages("check_your_answers.section2.sub_heading2")</th>
      <td id="check_your_answers-good_details-description">@advice.goodDetails.map(_.description).getOrElse("")</td>
+     <td id="check_your_answers-good_details-description-change" class="change">
+      <a href="@controllers.routes.GoodDetailsController.get()">Change</a>
+     </td>
     </tr>
    }
     <tr>
@@ -63,6 +75,9 @@
       @for((document: SupportingDocument, index: Int) <- advice.supportingDocuments.zipWithIndex) {
        <div  id="check_your_answers-supporting_document_details-file-@index">@document.fileName</div>
       }
+     </td>
+     <td id="check_your_answers-supporting_document_details-files-change" class="change">
+      <a href="@controllers.routes.SupportingDocumentsController.get()">Change</a>
      </td>
     </tr>
    </tbody>
@@ -76,6 +91,9 @@
      <tr>
       <th>@messages("check_your_answers.section3.sub_heading1")</th>
       <td id="check_your_answers-supporting_information">@advice.supportingInformation.getOrElse("")</td>
+      <td id="check_your_answers-supporting_information-change" class="change">
+       <a href="@controllers.routes.SupportingInformationDetailsController.get()">Change</a>
+      </td>
      </tr>
     </tbody>
    </table>
