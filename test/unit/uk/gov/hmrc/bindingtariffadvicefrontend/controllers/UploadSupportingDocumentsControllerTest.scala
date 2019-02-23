@@ -29,7 +29,7 @@ import play.api.mvc.{MaxSizeExceeded, MultipartFormData}
 import play.api.test.Helpers.{charset, contentType, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers, NormalMode}
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, FileUpload, FileUploaded, SupportingDocument}
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -59,7 +59,7 @@ class UploadSupportingDocumentsControllerTest extends ControllerSpec {
     val advice = Advice("id")
 
     "return 200" in {
-      val result = await(controller(advice).get(getRequestWithCSRF))
+      val result = await(controller(advice).get(NormalMode)(getRequestWithCSRF))
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
@@ -84,10 +84,10 @@ class UploadSupportingDocumentsControllerTest extends ControllerSpec {
       val form = MultipartFormData[TemporaryFile](dataParts = Map(), files = Seq(filePart), badParts = Seq.empty)
 
       val request = postRequestWithCSRF.withBody(Right(form))
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
 
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get().url)
+      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get(NormalMode).url)
 
       theAdviceUpdated shouldBe Advice(
         "id",
@@ -114,7 +114,7 @@ class UploadSupportingDocumentsControllerTest extends ControllerSpec {
       val form = MultipartFormData[TemporaryFile](dataParts = Map(), files = Seq(filePart), badParts = Seq.empty)
 
       val request = postRequestWithCSRF.withBody(Right(form))
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
 
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
@@ -128,7 +128,7 @@ class UploadSupportingDocumentsControllerTest extends ControllerSpec {
       val form = MultipartFormData[TemporaryFile](dataParts = Map(), files = Seq(filePart), badParts = Seq.empty)
 
       val request = postRequestWithCSRF.withBody(Right(form))
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
 
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
@@ -139,7 +139,7 @@ class UploadSupportingDocumentsControllerTest extends ControllerSpec {
 
     "return 200 with form errors - given file too large" in {
       val request = postRequestWithCSRF.withBody(Left(MaxSizeExceeded(0)))
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
 
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")

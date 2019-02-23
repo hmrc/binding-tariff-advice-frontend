@@ -23,7 +23,7 @@ import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
 import play.api.test.Helpers.{charset, contentType, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers, NormalMode}
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, SupportingDocument}
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
@@ -50,7 +50,7 @@ class SupportingInformationControllerTest extends ControllerSpec {
     val advice = Advice("id")
 
     "return 200" in {
-      val result = await(controller(advice).get(getRequestWithCSRF))
+      val result = await(controller(advice).get(NormalMode)(getRequestWithCSRF))
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
@@ -63,21 +63,21 @@ class SupportingInformationControllerTest extends ControllerSpec {
 
     "return 303 and redirect on valid form - with answer 'Yes'" in {
       val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "true")
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.SupportingInformationDetailsController.get().url)
+      locationOf(result) shouldBe Some(routes.SupportingInformationDetailsController.get(NormalMode).url)
     }
 
     "return 303 and redirect on valid form - with answer 'No'" in {
       val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "false")
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
       status(result) shouldBe Status.SEE_OTHER
       locationOf(result) shouldBe Some(routes.CheckYourAnswersController.get().url)
     }
 
     "return 200 on form errors" in {
       val request = postRequestWithCSRF.withFormUrlEncodedBody()
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
 
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")

@@ -70,6 +70,8 @@ def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] = {
   }
 }
 
+routesImport += "uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action"
+
 // Coverage configuration
 coverageMinimum := 70
 coverageFailOnMinimum := true

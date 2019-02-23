@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{RequireSessionAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action._
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.ContactDetailsForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.ContactDetails
@@ -39,22 +39,24 @@ class ContactDetailsController @Inject()(requireSession: RequireSessionAction,
                                          override val messagesApi: MessagesApi,
                                          implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    val form: Form[ContactDetails] = request.advice.contactDetails.map(ContactDetailsForm.form.fill).getOrElse(ContactDetailsForm.form)
-    Future.successful(Ok(views.html.contact_details(form)))
+  def get(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async {
+    implicit request: AnswersRequest[AnyContent] =>
+      val form: Form[ContactDetails] = request.advice.contactDetails.map(ContactDetailsForm.form.fill).getOrElse(ContactDetailsForm.form)
+      Future.successful(Ok(views.html.contact_details(form, mode)))
   }
 
-  def post: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    def onError: Form[ContactDetails] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.contact_details(formWithErrors)))
-    }
+  def post(implicit mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async {
+    implicit request: AnswersRequest[AnyContent] =>
+      def onError: Form[ContactDetails] => Future[Result] = formWithErrors => {
+        Future.successful(Ok(views.html.contact_details(formWithErrors, mode)))
+      }
 
-    def onSuccess: ContactDetails => Future[Result] = contactDetails => {
+      def onSuccess: ContactDetails => Future[Result] = contactDetails => {
         val updated = request.advice.copy(contactDetails = Some(contactDetails))
-        adviceService.update(updated).map(_ => Redirect(routes.GoodDetailsController.get()))
-    }
+        adviceService.update(updated).map(_ => Navigator.redirect(routes.GoodDetailsController.get(mode)))
+      }
 
-    ContactDetailsForm.form.bindFromRequest.fold(onError, onSuccess)
+      ContactDetailsForm.form.bindFromRequest.fold(onError, onSuccess)
   }
 
 }

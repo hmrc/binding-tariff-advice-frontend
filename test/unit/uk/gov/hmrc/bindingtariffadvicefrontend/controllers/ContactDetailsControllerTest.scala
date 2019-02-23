@@ -25,7 +25,7 @@ import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
 import play.api.test.Helpers.{charset, contentType, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers, NormalMode}
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
@@ -52,7 +52,7 @@ class ContactDetailsControllerTest extends ControllerSpec {
     val advice = Advice("id")
 
     "return 200" in {
-      val result = await(controller(advice).get(getRequestWithCSRF))
+      val result = await(controller(advice).get(NormalMode)(getRequestWithCSRF))
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
@@ -67,14 +67,14 @@ class ContactDetailsControllerTest extends ControllerSpec {
       given(service.update(any[Advice])) will returnTheAdviceUpdated
 
       val request = postRequestWithCSRF.withFormUrlEncodedBody("full-name" -> "name", "email" -> "name@host.com")
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.GoodDetailsController.get().url)
+      locationOf(result) shouldBe Some(routes.GoodDetailsController.get(NormalMode).url)
     }
 
     "return 200 on form errors" in {
       val request = postRequestWithCSRF.withFormUrlEncodedBody()
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
 
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")

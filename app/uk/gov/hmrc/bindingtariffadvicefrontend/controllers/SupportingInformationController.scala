@@ -21,14 +21,13 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{RequireSessionAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, RequireSessionAction, RetrieveAnswersAction}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.BooleanForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 import uk.gov.hmrc.bindingtariffadvicefrontend.views
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
@@ -38,17 +37,17 @@ class SupportingInformationController @Inject()(requireSession: RequireSessionAc
                                                 override val messagesApi: MessagesApi,
                                                 implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    Future.successful(Ok(views.html.supporting_information(BooleanForm.form.fill(false))))
+  def get(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+    Future.successful(Ok(views.html.supporting_information(BooleanForm.form.fill(false), mode)))
   }
 
-  def post: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+  def post(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
     def onError: Form[Boolean] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.supporting_information(formWithErrors)))
+        Future.successful(Ok(views.html.supporting_information(formWithErrors, mode)))
     }
 
     def onSuccess: Boolean => Future[Result] = {
-      case true => Future.successful(Redirect(routes.SupportingInformationDetailsController.get()))
+      case true => Future.successful(Redirect(routes.SupportingInformationDetailsController.get(mode)))
       case false => Future.successful(Redirect(routes.CheckYourAnswersController.get()))
     }
 

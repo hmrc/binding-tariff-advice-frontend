@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@()(implicit messages: Messages)
+package uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 
-@*<div class="js-visible">*@
-  @*<button id="back-link" class="link-back" onclick="window.history.back()">@messages("site.back")</button>*@
-@*</div>*@
+import play.api.mvc.{Call, Result, Results}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{CheckMode, Mode, NormalMode}
+
+object Navigator {
+  def redirect(call: Call)(implicit mode: Mode): Result = mode match {
+    case NormalMode => Results.Redirect(call)
+    case CheckMode => Results.Redirect(routes.CheckYourAnswersController.get())
+  }
+}

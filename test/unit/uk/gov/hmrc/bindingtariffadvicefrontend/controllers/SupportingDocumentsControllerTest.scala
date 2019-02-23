@@ -23,7 +23,7 @@ import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
 import play.api.test.Helpers.{charset, contentType, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers, NormalMode}
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, SupportingDocument}
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
@@ -50,7 +50,7 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
     val advice = Advice("id")
 
     "return 200" in {
-      val result = await(controller(advice).get(getRequestWithCSRF))
+      val result = await(controller(advice).get(NormalMode)(getRequestWithCSRF))
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
@@ -63,21 +63,21 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
 
     "return 303 and redirect on valid form - with answer 'Yes'" in {
       val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "true")
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.UploadSupportingDocumentsController.get().url)
+      locationOf(result) shouldBe Some(routes.UploadSupportingDocumentsController.get(NormalMode).url)
     }
 
     "return 303 and redirect on valid form - with answer 'No'" in {
       val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "false")
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.SupportingInformationController.get().url)
+      locationOf(result) shouldBe Some(routes.SupportingInformationController.get(NormalMode).url)
     }
 
     "return 200 on form errors" in {
       val request = postRequestWithCSRF.withFormUrlEncodedBody()
-      val result = await(controller(advice).post(request))
+      val result = await(controller(advice).post(NormalMode)(request))
 
       status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
@@ -94,20 +94,20 @@ class SupportingDocumentsControllerTest extends ControllerSpec {
       given(service.update(Advice("id"))) willReturn Future.successful(mock[Advice])
 
       val advice = Advice("id", supportingDocuments = Seq(document))
-      val result = await(controller(advice).delete("id")(deleteRequestWithCSRF))
+      val result = await(controller(advice).delete("id", NormalMode)(deleteRequestWithCSRF))
 
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get().url)
+      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get(NormalMode).url)
     }
 
     "return 303 and redirect on invalid id" in {
       val advice = Advice("id", supportingDocuments = Seq(document))
       given(service.update(advice)) willReturn Future.successful(mock[Advice])
 
-      val result = await(controller(advice).delete("other-id")(deleteRequestWithCSRF))
+      val result = await(controller(advice).delete("other-id", NormalMode)(deleteRequestWithCSRF))
 
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get().url)
+      locationOf(result) shouldBe Some(routes.SupportingDocumentsController.get(NormalMode).url)
     }
 
   }

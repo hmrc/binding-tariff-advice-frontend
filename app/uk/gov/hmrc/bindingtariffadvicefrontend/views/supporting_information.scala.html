@@ -26,11 +26,12 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers._
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.back_link
-@(form: Form[Boolean])(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode
+@(form: Form[Boolean], mode: Mode)(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = "Binding Tariff Advice", bodyClasses = None) {
 
- @helper.form(action = routes.SupportingInformationController.post()) {
+ @helper.form(action = routes.SupportingInformationController.post(mode)) {
 
   @back_link()
 

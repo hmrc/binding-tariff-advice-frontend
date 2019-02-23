@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 @import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
 @import uk.gov.hmrc.bindingtariffadvicefrontend.model.SupportingDocument
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode
 @()(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = "Binding Tariff Advice", bodyClasses = None) {
@@ -35,14 +36,14 @@
       <th>@messages("check_your_answers.section1.sub_heading1")</th>
       <td id="check_your_answers-contact_details-name">@advice.contactDetails.map(_.fullName).getOrElse("")</td>
       <td id="check_your_answers-contact_details-name-change" class="change">
-       <a href="@controllers.routes.ContactDetailsController.get()">Change</a>
+       <a href="@controllers.routes.ContactDetailsController.get(CheckMode)">Change</a>
       </td>
      </tr>
      <tr>
       <th>@messages("check_your_answers.section1.sub_heading2")</th>
       <td id="check_your_answers-contact_details-email">@advice.contactDetails.map(_.email).getOrElse("")</td>
       <td id="check_your_answers-contact_details-email-change" class="change">
-       <a href="@controllers.routes.ContactDetailsController.get()">Change</a>
+       <a href="@controllers.routes.ContactDetailsController.get(CheckMode)">Change</a>
       </td>
      </tr>
     </tbody>
@@ -58,14 +59,14 @@
      <th>@messages("check_your_answers.section2.sub_heading1")</th>
      <td id="check_your_answers-good_details-name">@advice.goodDetails.map(_.itemName).getOrElse("")</td>
      <td id="check_your_answers-good_details-name-change" class="change">
-      <a href="@controllers.routes.GoodDetailsController.get()">Change</a>
+      <a href="@controllers.routes.GoodDetailsController.get(CheckMode)">Change</a>
      </td>
     </tr>
     <tr>
      <th>@messages("check_your_answers.section2.sub_heading2")</th>
      <td id="check_your_answers-good_details-description">@advice.goodDetails.map(_.description).getOrElse("")</td>
      <td id="check_your_answers-good_details-description-change" class="change">
-      <a href="@controllers.routes.GoodDetailsController.get()">Change</a>
+      <a href="@controllers.routes.GoodDetailsController.get(CheckMode)">Change</a>
      </td>
     </tr>
    }
@@ -77,7 +78,7 @@
       }
      </td>
      <td id="check_your_answers-supporting_document_details-files-change" class="change">
-      <a href="@controllers.routes.SupportingDocumentsController.get()">Change</a>
+      <a href="@controllers.routes.SupportingDocumentsController.get(CheckMode)">Change</a>
      </td>
     </tr>
    </tbody>
@@ -92,7 +93,7 @@
       <th>@messages("check_your_answers.section3.sub_heading1")</th>
       <td id="check_your_answers-supporting_information">@advice.supportingInformation.getOrElse("")</td>
       <td id="check_your_answers-supporting_information-change" class="change">
-       <a href="@controllers.routes.SupportingInformationDetailsController.get()">Change</a>
+       <a href="@controllers.routes.SupportingInformationDetailsController.get(CheckMode)">Change</a>
       </td>
      </tr>
     </tbody>
@@ -100,7 +101,5 @@
   }
  }
 
-
-
- <a id="check_your_answers-button" class="button mt-4" href="@controllers.routes.ContactDetailsController.get()">@messages("check_your_answers.button")</a>
+ <a id="check_your_answers-button" class="button mt-4" href="@controllers.routes.CheckYourAnswersController.get()">@messages("check_your_answers.button")</a>
 }

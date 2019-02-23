@@ -26,11 +26,12 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers._
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.back_link
-@(form: Form[Boolean])(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode
+@(form: Form[Boolean], mode: Mode)(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = "Binding Tariff Advice", bodyClasses = None) {
 
- @helper.form(action = routes.SupportingDocumentsController.post()) {
+ @helper.form(action = routes.SupportingDocumentsController.post(mode)) {
 
   @back_link()
 
@@ -54,7 +55,7 @@
        <td id="supporting_documents-file_table-row-@{index}-title" class="file_list__td">@{file.fileName}</td>
        <td id="supporting_documents-file_table-row-@{index}-size" class="file_list__td">@ViewUtils.humanReadableSize(file.size)</td>
        <td class="file_list__td w-15">
-        <a id="supporting_documents-file_table-row-@{index}-remove_link" class="remove" href="@routes.SupportingDocumentsController.delete(file.id)">Remove</a>
+        <a id="supporting_documents-file_table-row-@{index}-remove_link" class="remove" href="@routes.SupportingDocumentsController.delete(file.id, mode)">Remove</a>
        </td>
       </tr>
      }

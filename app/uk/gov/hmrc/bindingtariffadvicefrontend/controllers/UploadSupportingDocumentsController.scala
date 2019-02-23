@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc._
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{RequireSessionAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, RequireSessionAction, RetrieveAnswersAction}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.FileForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, FileUpload, FileUploaded, SupportingDocument}
@@ -41,17 +41,17 @@ class UploadSupportingDocumentsController @Inject()(requireSession: RequireSessi
                                                     implicit val appConfig: AppConfig,
                                                     implicit val mat: Materializer) extends FrontendController with I18nSupport {
 
-  def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    Future.successful(Ok(views.html.upload_supporting_documents(FileForm.form)))
+  def get(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+    Future.successful(Ok(views.html.upload_supporting_documents(FileForm.form, mode)))
   }
 
-  def post: Action[Either[MaxSizeExceeded, MultipartFormData[TemporaryFile]]] =
+  def post(mode: Mode): Action[Either[MaxSizeExceeded, MultipartFormData[TemporaryFile]]] =
     (requireSession andThen retrieveAnswers).async(parse.maxLength(appConfig.fileUploadMaxSize, parse.multipartFormData)) {
       implicit request: AnswersRequest[Either[MaxSizeExceeded, MultipartFormData[TemporaryFile]]] =>
 
         def respondWithFormError(key: String, message: String): Future[Result] = {
           val form = FileForm.form.withError(key, message)
-          Future.successful(Ok(views.html.upload_supporting_documents(form)))
+          Future.successful(Ok(views.html.upload_supporting_documents(form, mode)))
         }
 
         request.body match {
@@ -66,7 +66,7 @@ class UploadSupportingDocumentsController @Inject()(requireSession: RequireSessi
               supportingDocument = SupportingDocument(uploaded, file.file.length())
               advice: Advice = request.advice.copy(supportingDocuments = request.advice.supportingDocuments :+ supportingDocument)
               _ <- adviceService.update(advice)
-            } yield Redirect(routes.SupportingDocumentsController.get())
+            } yield Redirect(routes.SupportingDocumentsController.get(mode))
 
           case Right(_) =>
             respondWithFormError("form_error.file_required", "File is required")

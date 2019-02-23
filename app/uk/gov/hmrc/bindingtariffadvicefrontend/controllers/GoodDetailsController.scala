@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{RequireSessionAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, RequireSessionAction, RetrieveAnswersAction}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.GoodDetailsForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.GoodDetails
@@ -39,22 +39,23 @@ class GoodDetailsController @Inject()(requireSession: RequireSessionAction,
                                       override val messagesApi: MessagesApi,
                                       implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+  def get(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
     val form: Form[GoodDetails] = request.advice.goodDetails.map(GoodDetailsForm.form.fill).getOrElse(GoodDetailsForm.form)
-    Future.successful(Ok(views.html.good_details(form)))
+    Future.successful(Ok(views.html.good_details(form, mode)))
   }
 
-  def post: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    def onError: Form[GoodDetails] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.good_details(formWithErrors)))
-    }
+  def post(implicit mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async {
+    implicit request: AnswersRequest[AnyContent] =>
+      def onError: Form[GoodDetails] => Future[Result] = formWithErrors => {
+        Future.successful(Ok(views.html.good_details(formWithErrors, mode)))
+      }
 
-    def onSuccess: GoodDetails => Future[Result] = goodDetails => {
+      def onSuccess: GoodDetails => Future[Result] = goodDetails => {
         val updated = request.advice.copy(goodDetails = Some(goodDetails))
-        adviceService.update(updated).map(_ => Redirect(routes.SupportingDocumentsController.get()))
-    }
+        adviceService.update(updated).map(_ => Navigator.redirect(routes.SupportingDocumentsController.get(mode)))
+      }
 
-    GoodDetailsForm.form.bindFromRequest.fold(onError, onSuccess)
+      GoodDetailsForm.form.bindFromRequest.fold(onError, onSuccess)
   }
 
 }

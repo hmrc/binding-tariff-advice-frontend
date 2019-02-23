@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@()(implicit messages: Messages)
+package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action
 
-@*<div class="js-visible">*@
-  @*<button id="back-link" class="link-back" onclick="window.history.back()">@messages("site.back")</button>*@
-@*</div>*@
+import play.api.mvc._
+
+trait Mode
+
+case object CheckMode extends Mode
+
+case object NormalMode extends Mode
+
+object Mode {
+
+  implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {
+    override def to(value: Mode): String = value match {
+      case NormalMode => "NormalMode"
+      case CheckMode => "CheckMode"
+    }
+  }
+
+}

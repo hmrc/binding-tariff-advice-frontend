@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{RequireSessionAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, RequireSessionAction, RetrieveAnswersAction}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.TextForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
@@ -38,14 +38,14 @@ class SupportingInformationDetailsController @Inject()(requireSession: RequireSe
                                                        override val messagesApi: MessagesApi,
                                                        implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+  def get(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
     val form: Form[String] = request.advice.supportingInformation.map(TextForm.form.fill).getOrElse(TextForm.form)
-    Future.successful(Ok(views.html.supporting_information_details(form)))
+    Future.successful(Ok(views.html.supporting_information_details(form, mode)))
   }
 
-  def post: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+  def post(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
     def onError: Form[String] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.supporting_information_details(formWithErrors)))
+        Future.successful(Ok(views.html.supporting_information_details(formWithErrors, mode)))
     }
 
     def onSuccess: String => Future[Result] = supportingInformation => {
