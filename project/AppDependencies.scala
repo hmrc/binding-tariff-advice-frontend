@@ -25,7 +25,7 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "hmrctest"                 % "3.5.0-play-25" % scope,
     "uk.gov.hmrc"             %% "http-verbs-test"          % "1.3.0"         % scope,
     "uk.gov.hmrc"             %% "service-integration-test" % "0.5.0-play-25" % scope,
-    "uk.gov.hmrc"             %% "reactivemongo-test"       % "4.7.0-play-25" % scope
+    "uk.gov.hmrc"             %% "reactivemongo-test"       % "4.8.0-play-25" % scope
   )
 
 }
