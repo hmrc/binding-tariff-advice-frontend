@@ -50,6 +50,17 @@ supporting_information_details.heading = What is the information you want to pro
 supporting_information_details.form.value =
 supporting_information_details.button = Continue
 
+check_your_answers.heading = Check your answers before sending your application
+check_your_answers.section1.heading = Your contact details
+check_your_answers.section1.sub_heading1 = Name
+check_your_answers.section1.sub_heading2 = Email
+check_your_answers.section2.heading = Information about your item
+check_your_answers.section2.sub_heading1 = Item name
+check_your_answers.section2.sub_heading2 = Item description
+check_your_answers.section2.sub_heading3 = Supporting Documents
+check_your_answers.section3.heading = Other information about your item
+check_your_answers.section3.sub_heading1 = Supporting information
+check_your_answers.button = Continue
 
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = To start a new advice request click the button below

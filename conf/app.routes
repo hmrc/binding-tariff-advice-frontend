@@ -25,3 +25,5 @@ POST       /supporting-information          @uk.gov.hmrc.bindingtariffadvicefron
 
 GET        /supporting-information-details  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingInformationDetailsController.get
 POST       /supporting-information-details  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingInformationDetailsController.post
+
+GET        /check-your-answers              @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.CheckYourAnswersController.get

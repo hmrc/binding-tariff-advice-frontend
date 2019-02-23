@@ -17,42 +17,26 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{RequireSessionAction, RetrieveAnswersAction}
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.BooleanForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 import uk.gov.hmrc.bindingtariffadvicefrontend.views
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class SupportingInformationController @Inject()(requireSession: RequireSessionAction,
-                                                retrieveAnswers: RetrieveAnswersAction,
-                                                adviceService: AdviceService,
-                                                override val messagesApi: MessagesApi,
-                                                implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
+class CheckYourAnswersController @Inject()(requireSession: RequireSessionAction,
+                                           retrieveAnswers: RetrieveAnswersAction,
+                                           adviceService: AdviceService,
+                                           override val messagesApi: MessagesApi,
+                                           implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
   def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    Future.successful(Ok(views.html.supporting_information(BooleanForm.form.fill(false))))
-  }
-
-  def post: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
-    def onError: Form[Boolean] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.supporting_information(formWithErrors)))
-    }
-
-    def onSuccess: Boolean => Future[Result] = {
-      case true => Future.successful(Redirect(routes.SupportingInformationDetailsController.get()))
-      case false => Future.successful(Redirect(routes.CheckYourAnswersController.get()))
-    }
-
-    BooleanForm.form.bindFromRequest.fold(onError, onSuccess)
+    Future.successful(Ok(views.html.check_your_answers()))
   }
 
 }

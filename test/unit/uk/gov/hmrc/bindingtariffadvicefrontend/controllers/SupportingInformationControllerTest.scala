@@ -72,7 +72,7 @@ class SupportingInformationControllerTest extends ControllerSpec {
       val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "false")
       val result = await(controller(advice).post(request))
       status(result) shouldBe Status.SEE_OTHER
-      locationOf(result) shouldBe Some(routes.SupportingInformationController.get().url)
+      locationOf(result) shouldBe Some(routes.CheckYourAnswersController.get().url)
     }
 
     "return 200 on form errors" in {

@@ -50,7 +50,7 @@ class SupportingInformationDetailsController @Inject()(requireSession: RequireSe
 
     def onSuccess: String => Future[Result] = supportingInformation => {
         val updated = request.advice.copy(supportingInformation = Some(supportingInformation))
-        adviceService.update(updated).map(_ => Redirect(routes.SupportingInformationDetailsController.get()))
+        adviceService.update(updated).map(_ => Redirect(routes.CheckYourAnswersController.get()))
     }
 
     TextForm.form.bindFromRequest.fold(onError, onSuccess)
