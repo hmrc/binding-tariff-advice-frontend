@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc._
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, RequireSessionAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, InitializeAnswersAction, RetrieveAnswersAction}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.FileForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, FileUpload, FileUploaded, SupportingDocument}
@@ -34,19 +34,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class UploadSupportingDocumentsController @Inject()(requireSession: RequireSessionAction,
-                                                    retrieveAnswers: RetrieveAnswersAction,
+class UploadSupportingDocumentsController @Inject()(retrieveAnswers: RetrieveAnswersAction,
                                                     adviceService: AdviceService,
                                                     override val messagesApi: MessagesApi,
                                                     implicit val appConfig: AppConfig,
                                                     implicit val mat: Materializer) extends FrontendController with I18nSupport {
 
-  def get(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+  def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
     Future.successful(Ok(views.html.upload_supporting_documents(FileForm.form, mode)))
   }
 
   def post(mode: Mode): Action[Either[MaxSizeExceeded, MultipartFormData[TemporaryFile]]] =
-    (requireSession andThen retrieveAnswers).async(parse.maxLength(appConfig.fileUploadMaxSize, parse.multipartFormData)) {
+    retrieveAnswers.async(parse.maxLength(appConfig.fileUploadMaxSize, parse.multipartFormData)) {
       implicit request: AnswersRequest[Either[MaxSizeExceeded, MultipartFormData[TemporaryFile]]] =>
 
         def respondWithFormError(key: String, message: String): Future[Result] = {

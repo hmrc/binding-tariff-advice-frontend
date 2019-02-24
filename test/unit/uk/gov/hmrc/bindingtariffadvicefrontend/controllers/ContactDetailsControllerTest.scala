@@ -25,7 +25,7 @@ import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
 import play.api.test.Helpers.{charset, contentType, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers, NormalMode}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{NewAnswers, ExistingAnswers, NormalMode}
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
@@ -41,7 +41,6 @@ class ContactDetailsControllerTest extends ControllerSpec {
   private implicit val mat: Materializer = fakeApplication.materializer
 
   private def controller(advice: Advice) = new ContactDetailsController(
-    ActiveSession("id"),
     ExistingAnswers(advice),
     service,
     messageApi,

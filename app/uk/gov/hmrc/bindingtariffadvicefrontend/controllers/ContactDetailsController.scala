@@ -33,19 +33,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class ContactDetailsController @Inject()(requireSession: RequireSessionAction,
-                                         retrieveAnswers: RetrieveAnswersAction,
+class ContactDetailsController @Inject()(retrieveAnswers: RetrieveAnswersAction,
                                          adviceService: AdviceService,
                                          override val messagesApi: MessagesApi,
                                          implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async {
+  def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async {
     implicit request: AnswersRequest[AnyContent] =>
       val form: Form[ContactDetails] = request.advice.contactDetails.map(ContactDetailsForm.form.fill).getOrElse(ContactDetailsForm.form)
       Future.successful(Ok(views.html.contact_details(form, mode)))
   }
 
-  def post(implicit mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async {
+  def post(implicit mode: Mode): Action[AnyContent] = retrieveAnswers.async {
     implicit request: AnswersRequest[AnyContent] =>
       def onError: Form[ContactDetails] => Future[Result] = formWithErrors => {
         Future.successful(Ok(views.html.contact_details(formWithErrors, mode)))

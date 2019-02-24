@@ -17,15 +17,16 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action
 
 import org.mockito.Mockito
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.{ActiveSessionRequest, AnswersRequest}
+import play.api.mvc.{Request, Result}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 import scala.concurrent.Future
 
 class ExistingAnswers(advice: Advice) extends RetrieveAnswersAction(Mockito.mock(classOf[AdviceService])) {
-  protected override def transform[A](sessionRequest: ActiveSessionRequest[A]): Future[AnswersRequest[A]] =
-    Future.successful(AnswersRequest(sessionRequest.request, advice))
+  override def invokeBlock[A](request: Request[A], block: AnswersRequest[A] => Future[Result]): Future[Result] =
+    block(AnswersRequest(request, advice))
 }
 
 object ExistingAnswers {

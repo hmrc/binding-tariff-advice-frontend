@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{RequireSessionAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.RetrieveAnswersAction
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 import uk.gov.hmrc.bindingtariffadvicefrontend.views
@@ -29,13 +29,12 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.Future
 
 @Singleton
-class CheckYourAnswersController @Inject()(requireSession: RequireSessionAction,
-                                           retrieveAnswers: RetrieveAnswersAction,
+class CheckYourAnswersController @Inject()(retrieveAnswers: RetrieveAnswersAction,
                                            adviceService: AdviceService,
                                            override val messagesApi: MessagesApi,
                                            implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get: Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+  def get: Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
     Future.successful(Ok(views.html.check_your_answers()))
   }
 

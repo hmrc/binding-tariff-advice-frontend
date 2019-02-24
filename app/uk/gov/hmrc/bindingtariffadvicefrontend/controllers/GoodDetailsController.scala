@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, RequireSessionAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, InitializeAnswersAction, RetrieveAnswersAction}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.GoodDetailsForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.GoodDetails
@@ -33,18 +33,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class GoodDetailsController @Inject()(requireSession: RequireSessionAction,
-                                      retrieveAnswers: RetrieveAnswersAction,
+class GoodDetailsController @Inject()(retrieveAnswers: RetrieveAnswersAction,
                                       adviceService: AdviceService,
                                       override val messagesApi: MessagesApi,
                                       implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get(mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async { implicit request: AnswersRequest[AnyContent] =>
+  def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
     val form: Form[GoodDetails] = request.advice.goodDetails.map(GoodDetailsForm.form.fill).getOrElse(GoodDetailsForm.form)
     Future.successful(Ok(views.html.good_details(form, mode)))
   }
 
-  def post(implicit mode: Mode): Action[AnyContent] = (requireSession andThen retrieveAnswers).async {
+  def post(implicit mode: Mode): Action[AnyContent] = retrieveAnswers.async {
     implicit request: AnswersRequest[AnyContent] =>
       def onError: Form[GoodDetails] => Future[Result] = formWithErrors => {
         Future.successful(Ok(views.html.good_details(formWithErrors, mode)))

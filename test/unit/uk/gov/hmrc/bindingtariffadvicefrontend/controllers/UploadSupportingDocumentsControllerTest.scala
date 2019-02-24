@@ -29,7 +29,7 @@ import play.api.mvc.{MaxSizeExceeded, MultipartFormData}
 import play.api.test.Helpers.{charset, contentType, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ActiveSession, ExistingAnswers, NormalMode}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{NewAnswers, ExistingAnswers, NormalMode}
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, FileUpload, FileUploaded, SupportingDocument}
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -46,7 +46,6 @@ class UploadSupportingDocumentsControllerTest extends ControllerSpec {
   private implicit val mat: Materializer = fakeApplication.materializer
 
   private def controller(advice: Advice) = new UploadSupportingDocumentsController(
-    ActiveSession("id"),
     ExistingAnswers(advice),
     service,
     messageApi,

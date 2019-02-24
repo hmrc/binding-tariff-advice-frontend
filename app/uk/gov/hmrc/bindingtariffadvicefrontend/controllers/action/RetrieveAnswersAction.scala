@@ -17,28 +17,36 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action
 
 import javax.inject.Inject
+import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc._
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.{ActiveSessionRequest, AnswersRequest}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.concurrent.Future.successful
 
-class RetrieveAnswersAction @Inject()(service: AdviceService) extends ActionTransformer[ActiveSessionRequest, AnswersRequest] {
+class RetrieveAnswersAction @Inject()(service: AdviceService) extends ActionBuilder[AnswersRequest] {
 
-  override protected def transform[A](sessionRequest: ActiveSessionRequest[A]): Future[AnswersRequest[A]] = {
-    val sessionId = sessionRequest.sessionId
+  override def invokeBlock[A](request: Request[A], block: AnswersRequest[A] => Future[Result]): Future[Result] = {
 
-    service.get(sessionId).flatMap {
-      case Some(advice: Advice) =>
-        successful(AnswersRequest(sessionRequest.request, advice))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
+    hc.sessionId.map(_.value) match {
+      case Some(sessionId: String) =>
+        service.get(sessionId).flatMap {
+          case Some(advice: Advice) =>
+            block(AnswersRequest(request, advice))
+
+          case _ =>
+            Future.successful(Redirect(routes.SessionExpiredController.get()))
+        }
       case _ =>
-        service
-          .insert(Advice(id = sessionId))
-          .map(AnswersRequest(sessionRequest.request, _))
+        Future.successful(BadRequest("Missing Session"))
     }
+
   }
 }

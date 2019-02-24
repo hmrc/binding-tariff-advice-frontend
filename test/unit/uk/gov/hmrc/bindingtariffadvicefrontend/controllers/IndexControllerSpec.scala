@@ -24,6 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NewAnswers
 import uk.gov.hmrc.play.test.UnitSpec
 
 
@@ -35,7 +36,7 @@ class IndexControllerSpec extends UnitSpec with GuiceOneAppPerSuite {
   private val messageApi = new DefaultMessagesApi(env, configuration, new DefaultLangs(configuration))
   private val appConfig = new AppConfig(configuration, env)
   private implicit val mat: Materializer = fakeApplication.materializer
-  private val controller = new IndexController(messageApi, appConfig)
+  private val controller = new IndexController(NewAnswers("id"), messageApi, appConfig)
 
   "GET /" should {
     "return 200" in {

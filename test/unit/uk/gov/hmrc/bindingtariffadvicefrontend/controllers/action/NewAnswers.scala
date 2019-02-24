@@ -15,16 +15,20 @@
  */
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action
+
+import org.mockito.Mockito
 import play.api.mvc.{Request, Result}
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.ActiveSessionRequest
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
+import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 import scala.concurrent.Future
 
-class ActiveSession(id: String = "session-id") extends RequireSessionAction {
-  override def invokeBlock[A](request: Request[A], block: ActiveSessionRequest[A] => Future[Result]): Future[Result] =
-    block(ActiveSessionRequest(request, id))
+class NewAnswers(id: String = "session-id") extends InitializeAnswersAction(Mockito.mock(classOf[AdviceService])) {
+  override def invokeBlock[A](request: Request[A], block: AnswersRequest[A] => Future[Result]): Future[Result] =
+    block(AnswersRequest(request, Advice(id = id)))
 }
 
-object ActiveSession {
-  def apply(id: String = "session-id"): ActiveSession = new ActiveSession(id)
+object NewAnswers {
+  def apply(id: String = "session-id"): NewAnswers = new NewAnswers(id)
 }
