@@ -101,5 +101,8 @@
   }
  }
 
- <a id="check_your_answers-button" class="button mt-4" href="@controllers.routes.CheckYourAnswersController.get()">@messages("check_your_answers.button")</a>
+ @helper.form(action = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes.CheckYourAnswersController.post()) {
+  @helper.CSRF.formField
+  <button id="check_your_answers-button" class="button mt-4" type="submit">@messages("check_your_answers.button")</button>
+ }
 }

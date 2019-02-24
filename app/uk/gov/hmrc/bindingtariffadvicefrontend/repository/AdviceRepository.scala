@@ -18,7 +18,7 @@ package uk.gov.hmrc.bindingtariffadvicefrontend.repository
 
 import com.google.inject.ImplementedBy
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import reactivemongo.api.indexes.Index
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json.ImplicitBSONHandlers._
@@ -38,6 +38,8 @@ trait AdviceRepository {
   def update(advice: Advice): Future[Advice]
 
   def get(id: String): Future[Option[Advice]]
+
+  def delete(id: String): Future[Unit]
 
 }
 
@@ -69,7 +71,9 @@ class AdviceMongoRepository @Inject()(config: AppConfig,
 
   override def get(id: String): Future[Option[Advice]] = collection.find(byId(id)).one[Advice]
 
-  private def byId(id: String) = {
+  override def delete(id: String): Future[Unit] = collection.findAndRemove(byId(id)).map(_ => ())
+
+  private def byId(id: String): JsObject = {
     Json.obj("id" -> id)
   }
 }

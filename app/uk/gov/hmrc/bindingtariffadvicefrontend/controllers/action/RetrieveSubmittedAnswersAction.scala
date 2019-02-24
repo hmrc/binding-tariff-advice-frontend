@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveAnswersAction @Inject()(service: AdviceService) extends ActionBuilder[AnswersRequest] {
+class RetrieveSubmittedAnswersAction @Inject()(service: AdviceService) extends ActionBuilder[AnswersRequest] {
 
   override def invokeBlock[A](request: Request[A], block: AnswersRequest[A] => Future[Result]): Future[Result] = {
 
@@ -38,7 +38,7 @@ class RetrieveAnswersAction @Inject()(service: AdviceService) extends ActionBuil
     hc.sessionId.map(_.value) match {
       case Some(sessionId: String) =>
         service.get(sessionId).flatMap {
-          case Some(advice: Advice) if advice.reference.isEmpty =>
+          case Some(advice: Advice) if(advice.reference.isDefined) =>
             block(AnswersRequest(request, advice))
 
           case _ =>

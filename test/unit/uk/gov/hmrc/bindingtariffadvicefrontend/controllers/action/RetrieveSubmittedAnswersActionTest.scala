@@ -30,24 +30,24 @@ import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 import scala.concurrent.Future
 
-class RetrieveAnswersActionTest extends ControllerSpec with BeforeAndAfterEach {
+class RetrieveSubmittedAnswersActionTest extends ControllerSpec with BeforeAndAfterEach {
 
   private val block = mock[AnswersRequest[_] => Future[Result]]
   private val result = mock[Result]
 
   private val service = mock[AdviceService]
-  private val action = new RetrieveAnswersAction(service)
+  private val action = new RetrieveSubmittedAnswersAction(service)
 
   override def afterEach(): Unit = {
     super.afterEach()
-    reset(block)
+    reset(block, service)
   }
 
   "Action" should {
     val request = FakeRequest().withHeaders("X-Session-ID" -> "session-id")
 
     "Retrieve existing answers & execute block" in {
-      val existingAnswers = Advice("id")
+      val existingAnswers = Advice("id", reference = Some("ref"))
 
       givenTheUserHasEntered(existingAnswers)
       givenTheBlockReturns(result)
@@ -57,8 +57,8 @@ class RetrieveAnswersActionTest extends ControllerSpec with BeforeAndAfterEach {
       theAnswersRequest shouldBe AnswersRequest(request, existingAnswers)
     }
 
-    "Redirect to Session Expired - on submitted answers" in {
-      val existingAnswers = Advice("id", reference = Some("ref"))
+    "Redirect to Session Expired - on unsubmitted answers" in {
+      val existingAnswers = Advice("id")
 
       givenTheUserHasEntered(existingAnswers)
 

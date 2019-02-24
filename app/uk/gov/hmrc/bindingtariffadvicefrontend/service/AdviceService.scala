@@ -32,15 +32,21 @@ class AdviceService @Inject()(repository: AdviceRepository,
 
   def get(id: String): Future[Option[Advice]] = repository.get(id)
 
-  def insert (advice: Advice): Future[Advice] = repository.insert(advice)
+  def insert(advice: Advice): Future[Advice] = repository.insert(advice)
 
   def update(advice: Advice): Future[Advice] = repository.update(advice)
+
+  def delete(id: String): Future[Unit] = repository.delete(id)
 
   def upload(metadata: FileUpload, file: TemporaryFile)(implicit hc: HeaderCarrier): Future[FileUploaded] = {
     for {
       template <- fileStoreConnector.initiate(metadata)
       _ <- upscanS3Connector.upload(template, file)
-    } yield FileUploaded(id = template.id, metadata.fileName, mimeType =  metadata.mimeType)
+    } yield FileUploaded(id = template.id, metadata.fileName, mimeType = metadata.mimeType)
   }
+
+  def submit(advice: Advice)(implicit hc: HeaderCarrier): Future[Advice] = update(
+    advice.copy(reference = Some(advice.id.substring(32).toUpperCase()))
+  )
 
 }

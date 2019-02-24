@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action
 
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.Result
+import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers._
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
@@ -30,13 +29,13 @@ import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 import scala.concurrent.Future
 
-class RetrieveAnswersActionTest extends ControllerSpec with BeforeAndAfterEach {
+class ResetAnswersActionTest extends ControllerSpec with BeforeAndAfterEach {
 
-  private val block = mock[AnswersRequest[_] => Future[Result]]
+  private val block = mock[Request[_] => Future[Result]]
   private val result = mock[Result]
 
   private val service = mock[AdviceService]
-  private val action = new RetrieveAnswersAction(service)
+  private val action = new ResetAnswersAction(service)
 
   override def afterEach(): Unit = {
     super.afterEach()
@@ -46,58 +45,23 @@ class RetrieveAnswersActionTest extends ControllerSpec with BeforeAndAfterEach {
   "Action" should {
     val request = FakeRequest().withHeaders("X-Session-ID" -> "session-id")
 
-    "Retrieve existing answers & execute block" in {
-      val existingAnswers = Advice("id")
+    "Delete existing answers & execute block" in {
+      given(service.delete("session-id")) willReturn Future.successful(())
 
-      givenTheUserHasEntered(existingAnswers)
       givenTheBlockReturns(result)
 
       await(action.invokeBlock(request, block)) shouldBe result
 
-      theAnswersRequest shouldBe AnswersRequest(request, existingAnswers)
-    }
-
-    "Redirect to Session Expired - on submitted answers" in {
-      val existingAnswers = Advice("id", reference = Some("ref"))
-
-      givenTheUserHasEntered(existingAnswers)
-
-      val result = await(action.invokeBlock(request, block))
-      status(result) shouldBe 303
-      locationOf(result) shouldBe Some(routes.SessionExpiredController.get().url)
-    }
-
-    "Redirect to Session Expired - on no answers" in {
-      givenTheUserHasEnteredNothing()
-
-      val result = await(action.invokeBlock(request, block))
-      status(result) shouldBe 303
-      locationOf(result) shouldBe Some(routes.SessionExpiredController.get().url)
+      verify(service.delete("id"))
     }
 
     "Return Bad Request on missing Session" in {
-      givenTheUserHasEnteredNothing()
-
       val result = await(action.invokeBlock(FakeRequest(), block))
       status(result) shouldBe 400
     }
   }
 
-  private def givenTheUserHasEntered(existing: Advice): Unit = {
-    given(service.get("session-id")) willReturn Future.successful(Some(existing))
-  }
-
-  private def givenTheUserHasEnteredNothing(): Unit = {
-    given(service.get("session-id")) willReturn Future.successful(None)
-  }
-
   private def givenTheBlockReturns(result: Result): Unit = {
     given(block.apply(any[AnswersRequest[_]])) willReturn Future.successful(result)
-  }
-
-  private def theAnswersRequest: AnswersRequest[_] = {
-    val captor: ArgumentCaptor[AnswersRequest[_]] = ArgumentCaptor.forClass(classOf[AnswersRequest[_]])
-    verify(block).apply(captor.capture())
-    captor.getValue
   }
 }

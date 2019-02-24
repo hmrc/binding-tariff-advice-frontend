@@ -24,6 +24,7 @@ import play.api.libs.json._
 case class Advice
 (
   id: String,
+  reference: Option[String] = None,
   contactDetails: Option[ContactDetails] = None,
   goodDetails: Option[GoodDetails] = None,
   supportingDocuments: Seq[SupportingDocument] = Seq.empty,

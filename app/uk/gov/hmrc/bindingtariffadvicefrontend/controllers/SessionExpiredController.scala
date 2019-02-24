@@ -20,16 +20,18 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.ResetAnswersAction
 import uk.gov.hmrc.bindingtariffadvicefrontend.views
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
 
 @Singleton
-class SessionExpiredController @Inject()(override val messagesApi: MessagesApi,
+class SessionExpiredController @Inject()(resetAnswers: ResetAnswersAction,
+                                         override val messagesApi: MessagesApi,
                                          implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get: Action[AnyContent] = Action.async { implicit request =>
+  def get: Action[AnyContent] = resetAnswers.async { implicit request =>
     Future.successful(Ok(views.html.session_expired()))
   }
 

@@ -20,7 +20,10 @@ import play.api.mvc.{Call, Result, Results}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{CheckMode, Mode, NormalMode}
 
 object Navigator {
-  def redirect(call: Call)(implicit mode: Mode): Result = mode match {
+
+  def continue(call: Call): Result = Results.Redirect(call)
+
+  def redirect(call: Call)(implicit mode: Mode = NormalMode): Result = mode match {
     case NormalMode => Results.Redirect(call)
     case CheckMode => Results.Redirect(routes.CheckYourAnswersController.get())
   }

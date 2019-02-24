@@ -86,9 +86,20 @@ class AdviceMongoRepositoryTest extends MongoUnitSpec
       val document = Advice(id = "id")
       givenAnExistingDocument(document)
 
-      val update = document.copy()
+      val update = document.copy(reference = Some("ref"))
 
       await(repository.update(update)) shouldBe update
+    }
+  }
+
+  "Delete" should {
+    "Delete One" in {
+      givenAnExistingDocument(Advice(id = "id1"))
+      givenAnExistingDocument(Advice(id = "id2"))
+
+      await(repository.delete("id1"))
+
+      thenTheDocumentCountShouldBe(1)
     }
   }
 
@@ -113,4 +124,5 @@ class AdviceMongoRepositoryTest extends MongoUnitSpec
   private def thenTheDocumentCountShouldBe(count: Int): Unit = {
     await(repository.collection.count()) shouldBe count
   }
+
 }

@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.service
 
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers._
-import org.mockito.BDDMockito
 import org.mockito.BDDMockito._
+import org.mockito.Mockito.verify
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.Files.TemporaryFile
@@ -38,6 +39,11 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
   private val fileStoreConnector = mock[FileStoreConnector]
   private val upscanS3Connector = mock[UpscanS3Connector]
   private val service = new AdviceService(repository, fileStoreConnector, upscanS3Connector)
+
+  override def afterEach(): Unit = {
+    super.afterEach()
+    Mockito.reset(repository, fileStoreConnector, upscanS3Connector)
+  }
 
   "Get" should {
     val advice = mock[Advice]
@@ -68,6 +74,29 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
     }
   }
 
+  "Delete" should {
+    "Delegate to Repository" in {
+      given(repository.delete(anyString())) willReturn Future.successful(())
+
+      await(service.delete("id"))
+
+      verify(repository).delete("id")
+    }
+  }
+
+  "Submit" should {
+    val advice = Advice(id = "123456789abcdefghijklmnopqrstuvwxyz")
+    val adviceUpdated = mock[Advice]
+
+    "Delegate to Repository" in {
+      given(repository.update(any[Advice])) willReturn Future.successful(adviceUpdated)
+
+      await(service.submit(advice)) shouldBe adviceUpdated
+
+      theAdviceUpdated.reference shouldBe Some("XYZ")
+    }
+  }
+
   "Upload" should {
     val file = mock[TemporaryFile]
     val fileUpload = FileUpload("name", "type")
@@ -78,6 +107,12 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
       given(upscanS3Connector.upload(refEq(fileUploadTemplate), refEq(file))(any[HeaderCarrier])) willReturn Future.successful(())
       await(service.upload(fileUpload, file)) shouldBe FileUploaded("id", "name", "type")
     }
+  }
+
+  private def theAdviceUpdated: Advice = {
+    val captor: ArgumentCaptor[Advice] = ArgumentCaptor.forClass(classOf[Advice])
+    verify(repository).update(captor.capture())
+    captor.getValue
   }
 
 }

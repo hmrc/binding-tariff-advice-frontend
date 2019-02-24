@@ -62,6 +62,11 @@ check_your_answers.section3.heading = Other information about your item
 check_your_answers.section3.sub_heading1 = Supporting information
 check_your_answers.button = Continue
 
+confirmation.heading = Form complete
+confirmation.content1 = Your form reference
+confirmation.content2 = What happens next
+confirmation.content3 = Your form will be received by the HMRC classification team. They will email you within 3 to 5 days with advice about your commodity code.
+
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = To start a new advice request click the button below
 session_expired.link = Start again

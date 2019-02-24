@@ -17,10 +17,9 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action
 
 import javax.inject.Inject
-import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,21 +28,16 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveAnswersAction @Inject()(service: AdviceService) extends ActionBuilder[AnswersRequest] {
+class ResetAnswersAction @Inject()(service: AdviceService)
+  extends ActionBuilder[Request]{
 
-  override def invokeBlock[A](request: Request[A], block: AnswersRequest[A] => Future[Result]): Future[Result] = {
+  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     hc.sessionId.map(_.value) match {
       case Some(sessionId: String) =>
-        service.get(sessionId).flatMap {
-          case Some(advice: Advice) if advice.reference.isEmpty =>
-            block(AnswersRequest(request, advice))
-
-          case _ =>
-            Future.successful(Redirect(routes.SessionExpiredController.get()))
-        }
+        service.delete(sessionId).flatMap(_ => block(request))
       case _ =>
         Future.successful(BadRequest("Missing Session"))
     }
