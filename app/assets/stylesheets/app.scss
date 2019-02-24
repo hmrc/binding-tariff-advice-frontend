@@ -34,11 +34,30 @@
   margin-bottom: $spacer;
 }
 
-w-15 {
+.w-15 {
   width: 15%;
 }
 
-w-50 {
+.w-50 {
   width: 50%;
+}
+
+.button-link {
+  background: none!important;
+  color: inherit !important;
+  border: none !important;
+  padding: 0!important;
+  -webkit-box-shadow: none !important;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover, &:focus {
+    color: #2e8aca;
+  }
+
+  &:visited {
+    color: #4c2c92;
+  }
 }
 

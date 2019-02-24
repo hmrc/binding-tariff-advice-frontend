@@ -79,4 +79,8 @@ class AppConfigTest extends UnitSpec with GuiceOneAppPerSuite {
   "Build 'Upload Mime Types'" in {
     appConfig("upload.mime-types" -> "application/pdf, image/jpeg").fileUploadMimeTypes shouldBe Seq("application/pdf", "image/jpeg")
   }
+
+  "Build 'Submission Mailbox'" in {
+    appConfig("submission.mailbox" -> "hmrc@hmrc.gov.uk").submissionMailbox shouldBe "hmrc@hmrc.gov.uk"
+  }
 }

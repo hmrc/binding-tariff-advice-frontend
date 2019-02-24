@@ -16,15 +16,17 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.service
 
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.Mockito.verify
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.Files.TemporaryFile
-import uk.gov.hmrc.bindingtariffadvicefrontend.connector.{FileStoreConnector, UpscanS3Connector}
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, FileUpload, FileUploadTemplate, FileUploaded}
+import play.api.libs.json.Writes
+import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
+import uk.gov.hmrc.bindingtariffadvicefrontend.connector.EmailConnector
+import uk.gov.hmrc.bindingtariffadvicefrontend.model._
 import uk.gov.hmrc.bindingtariffadvicefrontend.repository.AdviceRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
@@ -36,13 +38,14 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val repository = mock[AdviceRepository]
-  private val fileStoreConnector = mock[FileStoreConnector]
-  private val upscanS3Connector = mock[UpscanS3Connector]
-  private val service = new AdviceService(repository, fileStoreConnector, upscanS3Connector)
+  private val fileService = mock[FileService]
+  private val emailConnector = mock[EmailConnector]
+  private val appConfig = mock[AppConfig]
+  private val service = new AdviceService(repository, fileService, emailConnector, appConfig)
 
   override def afterEach(): Unit = {
     super.afterEach()
-    Mockito.reset(repository, fileStoreConnector, upscanS3Connector)
+    Mockito.reset(repository, fileService, emailConnector)
   }
 
   "Get" should {
@@ -85,33 +88,80 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
   }
 
   "Submit" should {
-    val advice = Advice(id = "123456789abcdefghijklmnopqrstuvwxyz")
-    val adviceUpdated = mock[Advice]
+    val contactDetails = ContactDetails("contact-name", "contact-email")
+    val goodDetails = GoodDetails("item-name", "item-description")
+    val supportingDocument1 = SupportingDocument("file-id1", "file-name1", "file-type1", 0)
+    val supportingDocument2 = SupportingDocument("file-id2", "file-name2", "file-type2", 0)
+
+    val fileSubmitted1 = FileSubmitted("file-published-id1", "file-published-name1", "file-published-type1")
+    val fileSubmitted2 = FileSubmitted("file-published-id2", "file-published-name2", "file-published-type2")
+
+    val advice = Advice(
+      id = "123456789abcdefghijklmnopqrstuvwxyz",
+      contactDetails = Some(contactDetails),
+      goodDetails = Some(goodDetails),
+      supportingDocuments = Seq(supportingDocument1, supportingDocument2),
+      supportingInformation = Some("supporting-info")
+    )
+    val adviceUpdated = advice.copy(reference = Some("XYZ"))
 
     "Delegate to Repository" in {
+      given(appConfig.submissionMailbox) willReturn "mailbox"
       given(repository.update(any[Advice])) willReturn Future.successful(adviceUpdated)
+      given(fileService.publish(refEq(supportingDocument1))(any[HeaderCarrier])) willReturn Future.successful(fileSubmitted1)
+      given(fileService.publish(refEq(supportingDocument2))(any[HeaderCarrier])) willReturn Future.successful(fileSubmitted2)
+      given(emailConnector.send(any[AdviceRequestEmail])(any[HeaderCarrier], any[Writes[Any]])) willReturn Future.successful(())
 
       await(service.submit(advice)) shouldBe adviceUpdated
 
       theAdviceUpdated.reference shouldBe Some("XYZ")
+      val email = theEmailSent
+      email.to shouldBe Seq("mailbox")
+      email.templateId shouldBe "digital_tariffs_advice_request"
+      email.parameters shouldBe AdviceRequestEmailParameters(
+        reference = "XYZ",
+        contactName = "contact-name",
+        contactEmail = "contact-email",
+        itemName = "item-name",
+        itemDescription = "item-description",
+        supportingDocuments = "/supporting-documents/file-published-id1|/supporting-documents/file-published-id2",
+        supportingInformation = "supporting-info"
+      )
+    }
+
+    "Fail on missing Contact Details" in {
+      intercept[IllegalArgumentException] {
+        await(service.submit(advice.copy(contactDetails = None)))
+      } getMessage() shouldBe "Cannot Submit without Contact Details"
+    }
+
+    "Fail on missing Good Details" in {
+      intercept[IllegalArgumentException] {
+        await(service.submit(advice.copy(goodDetails = None)))
+      } getMessage() shouldBe "Cannot Submit without Good Details"
     }
   }
 
   "Upload" should {
     val file = mock[TemporaryFile]
     val fileUpload = FileUpload("name", "type")
-    val fileUploadTemplate = FileUploadTemplate("id", "href", Map())
+    val fileUploaded = FileUploaded("id", "name", "type")
 
     "Delegate to Connectors" in {
-      given(fileStoreConnector.initiate(fileUpload)) willReturn Future.successful(fileUploadTemplate)
-      given(upscanS3Connector.upload(refEq(fileUploadTemplate), refEq(file))(any[HeaderCarrier])) willReturn Future.successful(())
-      await(service.upload(fileUpload, file)) shouldBe FileUploaded("id", "name", "type")
+      given(fileService.upload(refEq(fileUpload), refEq(file))(any[HeaderCarrier])) willReturn Future.successful(fileUploaded)
+      await(service.upload(fileUpload, file)) shouldBe fileUploaded
     }
   }
 
   private def theAdviceUpdated: Advice = {
     val captor: ArgumentCaptor[Advice] = ArgumentCaptor.forClass(classOf[Advice])
     verify(repository).update(captor.capture())
+    captor.getValue
+  }
+
+  private def theEmailSent: AdviceRequestEmail = {
+    val captor: ArgumentCaptor[AdviceRequestEmail] = ArgumentCaptor.forClass(classOf[AdviceRequestEmail])
+    verify(emailConnector).send(captor.capture())(any[HeaderCarrier], any[Writes[Any]])
     captor.getValue
   }
 

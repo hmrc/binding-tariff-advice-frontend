@@ -67,6 +67,11 @@ confirmation.content1 = Your form reference
 confirmation.content2 = What happens next
 confirmation.content3 = Your form will be received by the HMRC classification team. They will email you within 3 to 5 days with advice about your commodity code.
 
+supporting_document.heading = This file is unavailable
+supporting_document.content1 = It failed to process, this could be because a virus was found.
+supporting_document.content2 = It is still processing. It should be available in the next few minutes.
+supporting_document.content3 = It doesnt exist.
+
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = To start a new advice request click the button below
 session_expired.link = Start again

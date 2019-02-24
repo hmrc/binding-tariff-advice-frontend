@@ -18,7 +18,7 @@ package uk.gov.hmrc.bindingtariffadvicefrontend.connector
 
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.{FileUpload, FileUploadTemplate, FileUploaded}
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.{FileSubmitted, FileUpload, FileUploadTemplate, FileUploaded}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -37,21 +37,21 @@ class FileStoreConnector @Inject()(configuration: AppConfig,
     http.DELETE(s"${configuration.fileStoreUrl}/file/$id").map(_ => ())
   }
 
-  def get(id: String)(implicit hc: HeaderCarrier): Future[FileUploaded] = {
-    http.GET[FileUploaded](s"${configuration.fileStoreUrl}/file/$id")
+  def get(id: String)(implicit hc: HeaderCarrier): Future[Option[FileSubmitted]] = {
+    http.GET[Option[FileSubmitted]](s"${configuration.fileStoreUrl}/file/$id")
   }
 
-  def get(ids: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[FileUploaded]] = {
+  def get(ids: Seq[String])(implicit hc: HeaderCarrier): Future[Seq[FileSubmitted]] = {
     val params = ids.map(id => s"id=$id").mkString("&")
-    http.GET[Seq[FileUploaded]](s"${configuration.fileStoreUrl}/file?$params")
+    http.GET[Seq[FileSubmitted]](s"${configuration.fileStoreUrl}/file?$params")
   }
 
   def initiate(file: FileUpload)(implicit hc: HeaderCarrier): Future[FileUploadTemplate] = {
     http.POST[FileUpload, FileUploadTemplate](s"${configuration.fileStoreUrl}/file", file)
   }
 
-  def publish(id: String)(implicit hc: HeaderCarrier): Future[FileUploaded] = {
-    http.POSTEmpty[FileUploaded](s"${configuration.fileStoreUrl}/file/$id/publish")
+  def publish(id: String)(implicit hc: HeaderCarrier): Future[FileSubmitted] = {
+    http.POSTEmpty[FileSubmitted](s"${configuration.fileStoreUrl}/file/$id/publish")
   }
 
 }

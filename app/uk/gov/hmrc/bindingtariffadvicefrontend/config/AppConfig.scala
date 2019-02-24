@@ -45,5 +45,6 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
   lazy val mongoTTL: Duration = getDuration("mongodb.ttl")
   lazy val fileUploadMaxSize: Long = loadConfig("upload.max-size").toInt
   lazy val fileUploadMimeTypes: Seq[String] = loadConfig("upload.mime-types").split(",").map(_.trim)
+  lazy val submissionMailbox: String = loadConfig("submission.mailbox")
 
 }

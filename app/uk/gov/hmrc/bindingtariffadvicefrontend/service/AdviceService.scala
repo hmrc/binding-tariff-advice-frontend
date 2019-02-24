@@ -17,18 +17,21 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.service
 
 import javax.inject.Inject
+import play.api.Logger
 import play.api.libs.Files.TemporaryFile
-import uk.gov.hmrc.bindingtariffadvicefrontend.connector.{FileStoreConnector, UpscanS3Connector}
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, FileUpload, FileUploaded}
+import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
+import uk.gov.hmrc.bindingtariffadvicefrontend.connector.EmailConnector
+import uk.gov.hmrc.bindingtariffadvicefrontend.model._
 import uk.gov.hmrc.bindingtariffadvicefrontend.repository.AdviceRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AdviceService @Inject()(repository: AdviceRepository,
-                              fileStoreConnector: FileStoreConnector,
-                              upscanS3Connector: UpscanS3Connector) {
+                              fileService: FileService,
+                              emailConnector: EmailConnector,
+                              appConfig: AppConfig) {
 
   def get(id: String): Future[Option[Advice]] = repository.get(id)
 
@@ -38,15 +41,33 @@ class AdviceService @Inject()(repository: AdviceRepository,
 
   def delete(id: String): Future[Unit] = repository.delete(id)
 
-  def upload(metadata: FileUpload, file: TemporaryFile)(implicit hc: HeaderCarrier): Future[FileUploaded] = {
+  def upload(metadata: FileUpload, file: TemporaryFile)(implicit hc: HeaderCarrier): Future[FileUploaded] = fileService.upload(metadata, file)
+
+  def submit(advice: Advice)(implicit hc: HeaderCarrier): Future[Advice] = {
+    val contactDetails = advice.contactDetails.getOrElse(throw new IllegalArgumentException("Cannot Submit without Contact Details"))
+    val goodDetails = advice.goodDetails.getOrElse(throw new IllegalArgumentException("Cannot Submit without Good Details"))
+    val supportingInfo = advice.supportingInformation.getOrElse("")
+    val reference = advice.id.substring(32).toUpperCase()
     for {
-      template <- fileStoreConnector.initiate(metadata)
-      _ <- upscanS3Connector.upload(template, file)
-    } yield FileUploaded(id = template.id, metadata.fileName, mimeType = metadata.mimeType)
+      updated <- update(advice.copy(reference = Some(reference)))
+      documents <- Future.sequence(updated.supportingDocuments.map(doc => fileService.publish(doc)))
+      documentURLs = documents.map(doc => uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes.ViewSupportingDocumentController.get(doc.id))
+
+      parameters = AdviceRequestEmailParameters(
+        reference = reference,
+        contactName = contactDetails.fullName,
+        contactEmail = contactDetails.email,
+        itemName = goodDetails.itemName,
+        itemDescription = goodDetails.description,
+        supportingDocuments = documentURLs.mkString("|"),
+        supportingInformation = supportingInfo
+      )
+      email = AdviceRequestEmail(Seq(appConfig.submissionMailbox), parameters)
+      _ <- emailConnector.send(email) recover loggingAnError // TODO remove this recover block once Digital Contact merge https://github.com/hmrc/hmrc-email-renderer/pull/300
+    } yield updated
   }
 
-  def submit(advice: Advice)(implicit hc: HeaderCarrier): Future[Advice] = update(
-    advice.copy(reference = Some(advice.id.substring(32).toUpperCase()))
-  )
-
+  private def loggingAnError: PartialFunction[Throwable, Unit] = {
+    case e: Throwable => Logger.error("Email failed to send", e)
+  }
 }

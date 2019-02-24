@@ -26,7 +26,7 @@ import play.api.http.Status
 import play.api.libs.ws.WSClient
 import uk.gov.hmrc.bindingtariffadvicefrontend.{ResourceFiles, WiremockTestServer}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.{FileUpload, FileUploadTemplate, FileUploaded}
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.{FileSubmitted, FileUpload, FileUploadTemplate, FileUploaded}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.audit.DefaultAuditConnector
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
@@ -113,11 +113,23 @@ class FileStoreConnectorTest extends UnitSpec with WithFakeApplication with Wire
           )
       )
 
-      await(connector.get("id")) shouldBe FileUploaded(
+      await(connector.get("id")) shouldBe Some(FileSubmitted(
         id = "id",
         fileName = "file-name.txt",
         mimeType = "text/plain"
+      ))
+    }
+
+    "GET none from the File Store" in {
+      stubFor(
+        get("/file/id")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.NOT_FOUND)
+          )
       )
+
+      await(connector.get("id")) shouldBe None
     }
   }
 
@@ -133,7 +145,7 @@ class FileStoreConnectorTest extends UnitSpec with WithFakeApplication with Wire
           )
       )
 
-      await(connector.get(Seq("id"))) shouldBe Seq(FileUploaded(
+      await(connector.get(Seq("id"))) shouldBe Seq(FileSubmitted(
         id = "id",
         fileName = "file-name.txt",
         mimeType = "text/plain"
@@ -153,7 +165,7 @@ class FileStoreConnectorTest extends UnitSpec with WithFakeApplication with Wire
           )
       )
 
-      await(connector.publish("id")) shouldBe FileUploaded(
+      await(connector.publish("id")) shouldBe FileSubmitted(
         id = "id",
         fileName = "file-name.txt",
         mimeType = "text/plain"
