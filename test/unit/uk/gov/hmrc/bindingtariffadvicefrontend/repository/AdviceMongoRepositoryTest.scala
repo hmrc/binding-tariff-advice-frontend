@@ -72,15 +72,6 @@ class AdviceMongoRepositoryTest extends MongoUnitSpec
     }
   }
 
-  "Insert" should {
-    "Insert One" in {
-      val document = Advice(id = "id")
-
-      await(repository.insert(document)) shouldBe document
-      thenTheDocumentCountShouldBe(1)
-    }
-  }
-
   "Update" should {
     "Update One" in {
       val document = Advice(id = "id")
@@ -88,7 +79,7 @@ class AdviceMongoRepositoryTest extends MongoUnitSpec
 
       val update = document.copy(reference = Some("ref"))
 
-      await(repository.update(update)) shouldBe update
+      await(repository.update(update, upsert = false)) shouldBe update
     }
   }
 

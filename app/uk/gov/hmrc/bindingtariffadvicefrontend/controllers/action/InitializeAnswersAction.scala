@@ -29,7 +29,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class InitializeAnswersAction @Inject()(service: AdviceService)
-  extends ActionBuilder[AnswersRequest]{
+  extends ActionBuilder[AnswersRequest] {
 
   override def invokeBlock[A](request: Request[A], block: AnswersRequest[A] => Future[Result]): Future[Result] = {
 
@@ -37,21 +37,15 @@ class InitializeAnswersAction @Inject()(service: AdviceService)
 
     hc.sessionId.map(_.value) match {
       case Some(sessionId: String) =>
-        service.get(sessionId).flatMap {
-          case Some(advice: Advice) =>
+        service
+          .insert(Advice(id = sessionId))
+          .flatMap { advice =>
             block(AnswersRequest(request, advice))
+          }
 
-          case _ =>
-            service
-              .insert(Advice(id = sessionId))
-              .flatMap { advice =>
-                block(AnswersRequest(request, advice))
-              }
-        }
       case _ =>
         Future.successful(BadRequest("Missing Session"))
     }
-
 
 
   }

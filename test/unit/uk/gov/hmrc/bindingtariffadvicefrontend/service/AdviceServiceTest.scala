@@ -62,7 +62,7 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
     val adviceInserted = mock[Advice]
 
     "Delegate to Repository" in {
-      given(repository.insert(advice)) willReturn Future.successful(adviceInserted)
+      given(repository.update(advice, upsert = true)) willReturn Future.successful(adviceInserted)
       await(service.insert(advice)) shouldBe adviceInserted
     }
   }
@@ -72,7 +72,7 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
     val adviceUpdated = mock[Advice]
 
     "Delegate to Repository" in {
-      given(repository.update(advice)) willReturn Future.successful(adviceUpdated)
+      given(repository.update(advice, upsert = false)) willReturn Future.successful(adviceUpdated)
       await(service.update(advice)) shouldBe adviceUpdated
     }
   }
@@ -107,7 +107,7 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
 
     "Delegate to Repository" in {
       given(appConfig.submissionMailbox) willReturn "mailbox"
-      given(repository.update(any[Advice])) willReturn Future.successful(adviceUpdated)
+      given(repository.update(any[Advice], refEq(false))) willReturn Future.successful(adviceUpdated)
       given(fileService.publish(refEq(supportingDocument1))(any[HeaderCarrier])) willReturn Future.successful(fileSubmitted1)
       given(fileService.publish(refEq(supportingDocument2))(any[HeaderCarrier])) willReturn Future.successful(fileSubmitted2)
       given(emailConnector.send(any[AdviceRequestEmail])(any[HeaderCarrier], any[Writes[Any]])) willReturn Future.successful(())
@@ -155,7 +155,7 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
 
   private def theAdviceUpdated: Advice = {
     val captor: ArgumentCaptor[Advice] = ArgumentCaptor.forClass(classOf[Advice])
-    verify(repository).update(captor.capture())
+    verify(repository).update(captor.capture(), refEq(false))
     captor.getValue
   }
 

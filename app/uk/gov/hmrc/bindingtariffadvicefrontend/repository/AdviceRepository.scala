@@ -33,9 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[AdviceMongoRepository])
 trait AdviceRepository {
 
-  def insert(advice: Advice): Future[Advice]
-
-  def update(advice: Advice): Future[Advice]
+  def update(advice: Advice, upsert: Boolean): Future[Advice]
 
   def get(id: String): Future[Option[Advice]]
 
@@ -60,13 +58,11 @@ class AdviceMongoRepository @Inject()(config: AppConfig,
     Future.sequence(indexes.map(collection.indexesManager.ensure(_)))
   }
 
-  override def insert(advice: Advice): Future[Advice] = collection.insert(advice).map(_ => advice)
-
-  override def update(advice: Advice): Future[Advice] = collection.findAndUpdate(
+  override def update(advice: Advice, upsert: Boolean): Future[Advice] = collection.findAndUpdate(
     selector = byId(advice.id),
     update = advice,
     fetchNewObject = true,
-    upsert = true
+    upsert = upsert
   ).map(_.value.map(_.as[Advice]).get)
 
   override def get(id: String): Future[Option[Advice]] = collection.find(byId(id)).one[Advice]

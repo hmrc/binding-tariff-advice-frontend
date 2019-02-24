@@ -35,9 +35,9 @@ class AdviceService @Inject()(repository: AdviceRepository,
 
   def get(id: String): Future[Option[Advice]] = repository.get(id)
 
-  def insert(advice: Advice): Future[Advice] = repository.insert(advice)
+  def insert(advice: Advice): Future[Advice] = repository.update(advice, upsert = true)
 
-  def update(advice: Advice): Future[Advice] = repository.update(advice)
+  def update(advice: Advice): Future[Advice] = repository.update(advice, upsert = false)
 
   def delete(id: String): Future[Unit] = repository.delete(id)
 

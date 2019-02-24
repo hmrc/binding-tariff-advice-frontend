@@ -52,19 +52,8 @@ class InitializeAnswersActionTest extends UnitSpec with MockitoSugar with Before
   "Initialize Answers" should {
     val request = FakeRequest().withHeaders("X-Session-ID" -> "session-id")
 
-    "Retrieve existing answers & execute block" in {
-      val existingAnswers = mock[Advice]
-
-      givenTheUserHasEntered(existingAnswers)
-      givenTheBlockReturns(result)
-
-      await(action.invokeBlock(request, block)) shouldBe result
-
-      theAnswersRequest shouldBe AnswersRequest(request, existingAnswers)
-    }
-
     "Create new answers & execute block" in {
-      givenTheUserHasEnteredNothing()
+      given(service.insert(any[Advice])) will returnTheAdvice
       givenTheBlockReturns(result)
 
       await(action.invokeBlock(request, block)) shouldBe result
@@ -73,20 +62,9 @@ class InitializeAnswersActionTest extends UnitSpec with MockitoSugar with Before
     }
 
     "Return Bad Request on missing Session" in {
-      givenTheUserHasEnteredNothing()
-
       val result = await(action.invokeBlock(FakeRequest(), block))
       status(result) shouldBe 400
     }
-  }
-
-  private def givenTheUserHasEntered(existing: Advice): Unit = {
-    given(service.get("session-id")) willReturn Future.successful(Some(existing))
-  }
-
-  private def givenTheUserHasEnteredNothing(): Unit = {
-    given(service.get("session-id")) willReturn Future.successful(None)
-    given(service.insert(any[Advice])) will returnTheAdvice
   }
 
   private def givenTheBlockReturns(result: Result): Unit = {
