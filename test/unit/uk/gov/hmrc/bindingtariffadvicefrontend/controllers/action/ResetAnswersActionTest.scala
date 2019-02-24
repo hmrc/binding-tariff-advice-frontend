@@ -24,7 +24,6 @@ import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers._
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 import scala.concurrent.Future
@@ -52,7 +51,7 @@ class ResetAnswersActionTest extends ControllerSpec with BeforeAndAfterEach {
 
       await(action.invokeBlock(request, block)) shouldBe result
 
-      verify(service.delete("id"))
+      verify(service).delete("session-id")
     }
 
     "Return Bad Request on missing Session" in {
