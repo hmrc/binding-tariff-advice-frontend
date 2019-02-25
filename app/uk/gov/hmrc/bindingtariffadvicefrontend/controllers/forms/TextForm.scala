@@ -18,12 +18,13 @@ package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms
 
 import play.api.data.Form
 import play.api.data.Forms._
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.FormConstraints.nonEmpty
 
 object TextForm {
 
-  val form: Form[String] = Form[String](
+  def form(key: String = "errors"): Form[String] = Form[String](
     mapping[String, String](
-      "value" -> nonEmptyText
+      "value" -> text.verifying(nonEmpty(s"$key.form.value.required"))
     )(identity)(Some(_))
   )
 

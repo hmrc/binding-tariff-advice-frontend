@@ -17,15 +17,16 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms
 
 import play.api.data.Form
-import play.api.data.Forms.{mapping, nonEmptyText}
+import play.api.data.Forms.{mapping, text}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.FormConstraints.nonEmpty
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.GoodDetails
 
 object GoodDetailsForm {
 
   val form: Form[GoodDetails] = Form[GoodDetails](
     mapping[GoodDetails, String, String](
-      "item-name" -> nonEmptyText,
-      "description" -> nonEmptyText
+      "item-name" -> text.verifying(nonEmpty("good_details.form.item_name.required")),
+      "description" -> text.verifying(nonEmpty("good_details.form.description.required"))
     )(GoodDetails.apply)(GoodDetails.unapply)
   )
 

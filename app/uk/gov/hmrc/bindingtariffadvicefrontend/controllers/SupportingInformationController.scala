@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, InitializeAnswersAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, RetrieveAnswersAction}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.BooleanForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
@@ -36,8 +36,10 @@ class SupportingInformationController @Inject()(retrieveAnswers: RetrieveAnswers
                                                 override val messagesApi: MessagesApi,
                                                 implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
+  private val form: Form[Boolean] = BooleanForm.form("supporting_information")
+
   def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
-    Future.successful(Ok(views.html.supporting_information(BooleanForm.form.fill(false), mode)))
+    Future.successful(Ok(views.html.supporting_information(form.fill(false), mode)))
   }
 
   def post(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
@@ -50,7 +52,7 @@ class SupportingInformationController @Inject()(retrieveAnswers: RetrieveAnswers
       case false => Future.successful(Redirect(routes.CheckYourAnswersController.get()))
     }
 
-    BooleanForm.form.bindFromRequest.fold(onError, onSuccess)
+    form.bindFromRequest.fold(onError, onSuccess)
   }
 
 }

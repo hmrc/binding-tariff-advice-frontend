@@ -27,24 +27,24 @@ class BooleanFormTest extends UnitSpec {
 
   "Form" should {
     "fill" in {
-      form.fill(true).data shouldBe validParams
+      form().fill(true).data shouldBe validParams
     }
 
     "bind" in {
-      val boundForm = form.bind(validParams)
+      val boundForm = form().bind(validParams)
       boundForm.hasErrors shouldBe false
       boundForm.get shouldBe true
     }
 
     "mandate populated 'state'" in {
       val invalidParams = validParams + ("state" -> "")
-      val boundForm = form.bind(invalidParams)
+      val boundForm = form().bind(invalidParams)
       boundForm.hasErrors shouldBe true
     }
 
     "mandate 'state'" in {
       val invalidParams = validParams - "state"
-      val boundForm = form.bind(invalidParams)
+      val boundForm = form().bind(invalidParams)
       boundForm.hasErrors shouldBe true
     }
   }

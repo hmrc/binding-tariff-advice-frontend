@@ -27,24 +27,24 @@ class TextFormTest extends UnitSpec {
 
   "Form" should {
     "fill" in {
-      form.fill("text").data shouldBe validParams
+      form().fill("text").data shouldBe validParams
     }
 
     "bind" in {
-      val boundForm = form.bind(validParams)
+      val boundForm = form().bind(validParams)
       boundForm.hasErrors shouldBe false
       boundForm.get shouldBe "text"
     }
 
     "mandate populated 'value'" in {
       val invalidParams = validParams + ("value" -> "")
-      val boundForm = form.bind(invalidParams)
+      val boundForm = form().bind(invalidParams)
       boundForm.hasErrors shouldBe true
     }
 
     "mandate 'value'" in {
       val invalidParams = validParams - "value"
-      val boundForm = form.bind(invalidParams)
+      val boundForm = form().bind(invalidParams)
       boundForm.hasErrors shouldBe true
     }
   }

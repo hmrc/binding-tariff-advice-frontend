@@ -17,16 +17,16 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms
 
 import play.api.data.Form
-import play.api.data.Forms.{mapping, nonEmptyText}
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.FormConstraints.validEmailAddress
+import play.api.data.Forms.{mapping, text}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.FormConstraints.{nonEmpty, validEmailAddress}
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.ContactDetails
 
 object ContactDetailsForm {
 
   val form: Form[ContactDetails] = Form[ContactDetails](
     mapping[ContactDetails, String, String](
-      "full-name" -> nonEmptyText,
-      "email" -> nonEmptyText.verifying(validEmailAddress)
+      "full-name" -> text.verifying(nonEmpty("contact_details.form.full_name.required")),
+      "email" -> text.verifying(nonEmpty("contact_details.form.email.required"), validEmailAddress("contact_details.form.email.valid"))
     )(ContactDetails.apply)(ContactDetails.unapply)
   )
 

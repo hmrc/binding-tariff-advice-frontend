@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, InitializeAnswersAction, RetrieveAnswersAction}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{Mode, RetrieveAnswersAction}
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.forms.TextForm
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
@@ -37,9 +37,11 @@ class SupportingInformationDetailsController @Inject()(retrieveAnswers: Retrieve
                                                        override val messagesApi: MessagesApi,
                                                        implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
+  private val form = TextForm.form("supporting_information_details")
+
   def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
-    val form: Form[String] = request.advice.supportingInformation.map(TextForm.form.fill).getOrElse(TextForm.form)
-    Future.successful(Ok(views.html.supporting_information_details(form, mode)))
+    val f: Form[String] = request.advice.supportingInformation.map(form.fill).getOrElse(form)
+    Future.successful(Ok(views.html.supporting_information_details(f, mode)))
   }
 
   def post(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
@@ -52,7 +54,7 @@ class SupportingInformationDetailsController @Inject()(retrieveAnswers: Retrieve
         adviceService.update(updated).map(_ => Redirect(routes.CheckYourAnswersController.get()))
     }
 
-    TextForm.form.bindFromRequest.fold(onError, onSuccess)
+    form.bindFromRequest.fold(onError, onSuccess)
   }
 
 }

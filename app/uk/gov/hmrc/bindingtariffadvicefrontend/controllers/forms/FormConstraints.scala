@@ -21,9 +21,19 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 
 object FormConstraints {
 
-  val validEmailAddress: Constraint[String] = Constraint {
+  def validEmailAddress(key: String): Constraint[String] = Constraint {
     case str: String if EmailValidator.getInstance().isValid(str) => Valid
-    case _ => Invalid("form_error.email")
+    case _ => Invalid(key)
+  }
+
+  def nonEmpty(key: String): Constraint[String] = Constraint {
+    case str: String if str.trim.nonEmpty => Valid
+    case _ => Invalid(key)
+  }
+
+  def defined[T](key: String): Constraint[Option[T]] = Constraint {
+    case option: Option[T] if option.isDefined => Valid
+    case _ => Invalid(key)
   }
 
 }
