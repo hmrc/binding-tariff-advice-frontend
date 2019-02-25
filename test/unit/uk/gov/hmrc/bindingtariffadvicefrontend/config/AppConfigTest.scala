@@ -46,11 +46,11 @@ class AppConfigTest extends UnitSpec with GuiceOneAppPerSuite {
   }
 
   "Build report url" in {
-    appConfig("contact-frontend.host" -> "host").reportAProblemPartialUrl shouldBe "host/contact/problem_reports_ajax?service=MyService"
+    appConfig("contact-frontend.host" -> "host").reportAProblemPartialUrl shouldBe "host/contact/problem_reports_ajax?service=BindingTariffAdvice"
   }
 
   "Build report non-json url" in {
-    appConfig("contact-frontend.host" -> "host").reportAProblemNonJSUrl shouldBe "host/contact/problem_reports_nonjs?service=MyService"
+    appConfig("contact-frontend.host" -> "host").reportAProblemNonJSUrl shouldBe "host/contact/problem_reports_nonjs?service=BindingTariffAdvice"
   }
 
   "Build 'Email' URL" in {
