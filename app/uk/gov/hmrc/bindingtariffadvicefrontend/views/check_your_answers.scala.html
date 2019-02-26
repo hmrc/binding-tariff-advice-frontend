@@ -76,6 +76,9 @@
       @for((document: SupportingDocument, index: Int) <- advice.supportingDocuments.zipWithIndex) {
        <div  id="check_your_answers-supporting_document_details-file-@index">@document.fileName</div>
       }
+      @if(advice.supportingDocuments.isEmpty){
+       @messages("check_your_answers.none")
+      }
      </td>
      <td id="check_your_answers-supporting_document_details-files-change" class="change">
       <a href="@controllers.routes.SupportingDocumentsController.get(CheckMode)">Change</a>
@@ -85,20 +88,19 @@
   </table>
 
 
-  @if(advice.supportingInformation.isDefined) {
-   <h2 id="check_your_answers-section3-heading">@messages("check_your_answers.section3.heading")</h2>
-   <table class="check_your_answers">
-    <tbody>
-     <tr>
-      <th id="check_your_answers-supporting_information-label">@messages("check_your_answers.section3.sub_heading1")</th>
-      <td id="check_your_answers-supporting_information">@advice.supportingInformation.getOrElse("")</td>
-      <td id="check_your_answers-supporting_information-change" class="change">
-       <a href="@controllers.routes.SupportingInformationDetailsController.get(CheckMode)">Change</a>
-      </td>
-     </tr>
-    </tbody>
-   </table>
-  }
+ <h2 id="check_your_answers-section3-heading">@messages("check_your_answers.section3.heading")</h2>
+ <table class="check_your_answers">
+  <tbody>
+    <tr>
+     <th id="check_your_answers-supporting_information-label">@messages("check_your_answers.section3.sub_heading1")</th>
+     <td id="check_your_answers-supporting_information">@advice.supportingInformation.getOrElse(messages("check_your_answers.none"))</td>
+     <td id="check_your_answers-supporting_information-change" class="change">
+       <a href="@controllers.routes.SupportingInformationController.get(CheckMode)">Change</a>
+     </td>
+    </tr>
+  </tbody>
+ </table>
+
  }
 
  @helper.form(action = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes.CheckYourAnswersController.post()) {

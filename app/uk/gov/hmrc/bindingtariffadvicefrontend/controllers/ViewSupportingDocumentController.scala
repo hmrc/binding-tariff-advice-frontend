@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.FileSubmitted
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.{FileSubmitted, ScanStatus}
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.FileService
 import uk.gov.hmrc.bindingtariffadvicefrontend.views
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -34,7 +34,7 @@ class ViewSupportingDocumentController @Inject()(fileService: FileService,
 
   def get(id: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     fileService.get(id) map {
-      case Some(fileSubmitted: FileSubmitted) if fileSubmitted.url.isDefined =>
+      case Some(fileSubmitted: FileSubmitted) if fileSubmitted.url.isDefined && fileSubmitted.scanStatus.contains(ScanStatus.READY) =>
         Redirect(Call(method = "GET", url = fileSubmitted.url.get))
       case fileSubmitted: Option[FileSubmitted] =>
         Ok(views.html.supporting_document(fileSubmitted))

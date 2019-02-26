@@ -49,7 +49,9 @@ class SupportingInformationController @Inject()(retrieveAnswers: RetrieveAnswers
 
     def onSuccess: Boolean => Future[Result] = {
       case true => Future.successful(Redirect(routes.SupportingInformationDetailsController.get(mode)))
-      case false => Future.successful(Redirect(routes.CheckYourAnswersController.get()))
+      case false => adviceService
+          .update(request.advice.copy(supportingInformation = None))
+            .map(_ => Redirect(routes.CheckYourAnswersController.get()))
     }
 
     form.bindFromRequest.fold(onError, onSuccess)

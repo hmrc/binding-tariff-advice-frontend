@@ -64,9 +64,10 @@ check_your_answers.section2.heading = Information about your item
 check_your_answers.section2.sub_heading1 = Item name
 check_your_answers.section2.sub_heading2 = Item description
 check_your_answers.section2.sub_heading3 = Supporting Documents
-check_your_answers.section3.heading = Other information about your item
+check_your_answers.section3.heading = Other information
 check_your_answers.section3.sub_heading1 = Supporting information
 check_your_answers.button = Continue
+check_your_answers.none = None
 
 confirmation.heading = Form complete
 confirmation.content1 = Your form reference

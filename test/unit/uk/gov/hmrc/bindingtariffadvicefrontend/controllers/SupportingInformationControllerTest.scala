@@ -17,14 +17,16 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 
 import akka.stream.Materializer
+import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
+import org.mockito.stubbing.Answer
 import play.api.http.Status
 import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
 import play.api.test.Helpers.{charset, contentType, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{NewAnswers, ExistingAnswers, NormalMode}
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.{Advice, SupportingDocument}
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.{ExistingAnswers, NormalMode}
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
 import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 import scala.concurrent.Future
@@ -68,6 +70,8 @@ class SupportingInformationControllerTest extends ControllerSpec {
     }
 
     "return 303 and redirect on valid form - with answer 'No'" in {
+      given(service.update(any[Advice])) will returnTheAdviceUpdated
+
       val request = postRequestWithCSRF.withFormUrlEncodedBody("state" -> "false")
       val result = await(controller(advice).post(NormalMode)(request))
       status(result) shouldBe Status.SEE_OTHER
@@ -85,5 +89,7 @@ class SupportingInformationControllerTest extends ControllerSpec {
       bodyOf(result) should include("error-summary")
     }
   }
+
+  private def returnTheAdviceUpdated: Answer[Future[Advice]] = returnTheFirstArgument[Advice]
 
 }
