@@ -39,7 +39,7 @@ class SupportingInformationController @Inject()(retrieveAnswers: RetrieveAnswers
   private val form: Form[Boolean] = BooleanForm.form("supporting_information")
 
   def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
-    Future.successful(Ok(views.html.supporting_information(form.fill(false), mode)))
+    Future.successful(Ok(views.html.supporting_information(form, mode)))
   }
 
   def post(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>

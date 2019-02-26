@@ -29,14 +29,15 @@ good_details.form.description_hint5 = how it  works
 good_details.form.description_hint6 = how it  is packaged, including all materials
 good_details.button = Continue
 
-supporting_documents.heading = Do you want to upload any supporting documents?
+supporting_documents.none.heading = Do you want to upload any supporting documents?
+supporting_documents.some.heading = You have uploaded {0} supporting documents
 supporting_documents.content1 = The things we need to give you accurate commodity code advice are:
 supporting_documents.content2 = ingredients list for food and drink items
 supporting_documents.content3 = technical specifications
 supporting_documents.content4 = lists of materials
 supporting_documents.content5 = images of the item
 supporting_documents.content6 = images of packaging
-supporting_documents.form.state1 = Upload a file?
+supporting_documents.some.form.state = Do you want to upload another document?
 supporting_documents.button = Continue
 
 upload_supporting_documents.heading = Upload any supporting photographs and documents

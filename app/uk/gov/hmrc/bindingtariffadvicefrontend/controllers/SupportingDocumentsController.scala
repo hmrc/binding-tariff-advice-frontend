@@ -40,7 +40,7 @@ class SupportingDocumentsController @Inject()(retrieveAnswers: RetrieveAnswersAc
   private val form: Form[Boolean] = BooleanForm.form("supporting_documents")
 
   def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
-    Future.successful(Ok(views.html.supporting_documents(form.fill(false), mode)))
+    Future.successful(Ok(views.html.supporting_documents(form, mode)))
   }
 
   def post(implicit mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
