@@ -37,7 +37,8 @@ supporting_documents.content3 = technical specifications
 supporting_documents.content4 = lists of materials
 supporting_documents.content5 = images of the item
 supporting_documents.content6 = images of packaging
-supporting_documents.some.form.state = Do you want to upload another document?
+supporting_documents.form.state.required = Your choice is required
+supporting_documents.form.state = Do you want to upload another document?
 supporting_documents.button = Continue
 
 upload_supporting_documents.heading = Upload any supporting photographs and documents
@@ -50,10 +51,12 @@ upload_supporting_documents.button = Upload
 
 supporting_information.heading = Do you need to enter any other supporting information?
 supporting_information.form.state = Select yes if you want to enter any supporting information
+supporting_information.form.state.required = Your choice is required
 supporting_information.button = Continue
 
 supporting_information_details.heading = What is the information you want to provide?
 supporting_information_details.form.value =
+supporting_information_details.form.value.required = Supporting information is required
 supporting_information_details.button = Continue
 
 check_your_answers.heading = Check your answers before sending your application

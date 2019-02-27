@@ -81,7 +81,7 @@
 
   @input_radiogroup(
    field = form("state"),
-   label = if(request.advice.supportingDocuments.nonEmpty) messages("supporting_documents.some.form.state", request.advice.supportingDocuments.size) else "",
+   label = if(request.advice.supportingDocuments.nonEmpty) messages("supporting_documents.form.state", request.advice.supportingDocuments.size) else "",
    labelClass = Some("heading-medium mb-1"),
    options = Seq(RadioOption("true", "Yes"), RadioOption("false", "No"))
   )
