@@ -16,9 +16,11 @@
 
 @import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.main_template
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = "Hello from binding-tariff-advice-frontend", bodyClasses = None) {
+@main_template(title = "Binding Tariff Advice", bodyClasses = None) {
  <h1 id="index-heading">@messages("index.heading")</h1>
 
  <p>@messages("index.content0")</p>
@@ -32,5 +34,5 @@
 
  <p>@messages("index.content5")</p>
 
- <a id="index-button" class="button" href="#">@messages("index.button")</a>
+ <a id="index-button" class="button" href="@controllers.routes.ContactDetailsController.get(NormalMode)">@messages("index.button")</a>
 }

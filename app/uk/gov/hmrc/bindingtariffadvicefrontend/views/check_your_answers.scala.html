@@ -1,0 +1,110 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
+@import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.main_template
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.request.AnswersRequest
+@import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
+@import uk.gov.hmrc.bindingtariffadvicefrontend.model.SupportingDocument
+@import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode
+@()(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = "Binding Tariff Advice", bodyClasses = None) {
+
+ <h1 id="check_your_answers-heading" class="mb-4">@messages("check_your_answers.heading")</h1>
+
+ @defining(request.advice) { advice: Advice =>
+  @if(advice.contactDetails.isDefined) {
+   <h2 id="check_your_answers-section1-heading">@messages("check_your_answers.section1.heading")</h2>
+   <table class="check_your_answers">
+    <tbody>
+     <tr>
+      <th id="check_your_answers-contact_details-name-label">@messages("check_your_answers.section1.sub_heading1")</th>
+      <td id="check_your_answers-contact_details-name">@advice.contactDetails.map(_.fullName).getOrElse("")</td>
+      <td id="check_your_answers-contact_details-name-change" class="change">
+       <a href="@controllers.routes.ContactDetailsController.get(CheckMode)">Change</a>
+      </td>
+     </tr>
+     <tr>
+      <th id="check_your_answers-contact_details-email-label">@messages("check_your_answers.section1.sub_heading2")</th>
+      <td id="check_your_answers-contact_details-email">@advice.contactDetails.map(_.email).getOrElse("")</td>
+      <td id="check_your_answers-contact_details-email-change" class="change">
+       <a href="@controllers.routes.ContactDetailsController.get(CheckMode)">Change</a>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  }
+
+
+  <h2 id="check_your_answers-section2-heading">@messages("check_your_answers.section2.heading")</h2>
+  <table class="check_your_answers">
+   <tbody>
+   @if(advice.goodDetails.isDefined) {
+    <tr>
+     <th id="check_your_answers-good_details-name-label">@messages("check_your_answers.section2.sub_heading1")</th>
+     <td id="check_your_answers-good_details-name">@advice.goodDetails.map(_.itemName).getOrElse("")</td>
+     <td id="check_your_answers-good_details-name-change" class="change">
+      <a href="@controllers.routes.GoodDetailsController.get(CheckMode)">Change</a>
+     </td>
+    </tr>
+    <tr>
+     <th id="check_your_answers-good_details-description-label">@messages("check_your_answers.section2.sub_heading2")</th>
+     <td id="check_your_answers-good_details-description">@advice.goodDetails.map(_.description).getOrElse("")</td>
+     <td id="check_your_answers-good_details-description-change" class="change">
+      <a href="@controllers.routes.GoodDetailsController.get(CheckMode)">Change</a>
+     </td>
+    </tr>
+   }
+    <tr>
+     <th id="check_your_answers-supporting_document_details-files-label">@messages("check_your_answers.section2.sub_heading3")</th>
+     <td id="check_your_answers-supporting_document_details-files">
+      @for((document: SupportingDocument, index: Int) <- advice.supportingDocuments.zipWithIndex) {
+       <div  id="check_your_answers-supporting_document_details-file-@index">@document.fileName</div>
+      }
+      @if(advice.supportingDocuments.isEmpty){
+       @messages("check_your_answers.none")
+      }
+     </td>
+     <td id="check_your_answers-supporting_document_details-files-change" class="change">
+      <a href="@controllers.routes.SupportingDocumentsController.get(CheckMode)">Change</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+
+
+ <h2 id="check_your_answers-section3-heading">@messages("check_your_answers.section3.heading")</h2>
+ <table class="check_your_answers">
+  <tbody>
+    <tr>
+     <th id="check_your_answers-supporting_information-label">@messages("check_your_answers.section3.sub_heading1")</th>
+     <td id="check_your_answers-supporting_information">@advice.supportingInformation.getOrElse(messages("check_your_answers.none"))</td>
+     <td id="check_your_answers-supporting_information-change" class="change">
+       <a href="@controllers.routes.SupportingInformationController.get(CheckMode)">Change</a>
+     </td>
+    </tr>
+  </tbody>
+ </table>
+
+ }
+
+ @helper.form(action = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes.CheckYourAnswersController.post()) {
+  @helper.CSRF.formField
+  <button id="check_your_answers-button" class="button mt-4" type="submit">@messages("check_your_answers.button")</button>
+ }
+}

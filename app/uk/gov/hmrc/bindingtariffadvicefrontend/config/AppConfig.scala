@@ -21,18 +21,30 @@ import play.api.Mode.Mode
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
 
+import scala.concurrent.duration.Duration
+
 @Singleton
 class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig {
+
   override protected def mode: Mode = environment.mode
 
   private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private val contactHost = runModeConfiguration.getString(s"contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "MyService"
+  private val contactFormServiceIdentifier = "BindingTariffAdvice"
 
-  lazy val assetsPrefix = loadConfig(s"assets.url") + loadConfig(s"assets.version")
-  lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  lazy val analyticsHost = loadConfig(s"google-analytics.host")
+  lazy val assetsPrefix: String = loadConfig(s"assets.url") + loadConfig(s"assets.version")
+  lazy val analyticsToken: String = loadConfig(s"google-analytics.token")
+  lazy val analyticsHost: String = loadConfig(s"google-analytics.host")
   lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
+  lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  lazy val emailUrl: String = baseUrl("email")
+  lazy val fileStoreUrl: String = baseUrl("binding-tariff-filestore")
+  lazy val mongoTTL: Duration = getDuration("mongodb.ttl")
+  lazy val fileUploadMaxSize: Long = loadConfig("upload.max-size").toInt
+  lazy val fileUploadMimeTypes: Seq[String] = loadConfig("upload.mime-types").split(",").map(_.trim)
+  lazy val submissionMailbox: String = loadConfig("submission.mailbox")
+
 }

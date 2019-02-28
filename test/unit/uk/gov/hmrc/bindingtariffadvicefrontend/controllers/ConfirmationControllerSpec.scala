@@ -17,39 +17,38 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 
 import akka.stream.Materializer
-import org.scalatest.Matchers
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.SubmittedAnswers
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.Advice
+import uk.gov.hmrc.bindingtariffadvicefrontend.service.AdviceService
 
 
-class IndexControllerControllerSpec extends UnitSpec with Matchers with GuiceOneAppPerSuite {
+class ConfirmationControllerSpec extends ControllerSpec {
 
-  private val fakeRequest = FakeRequest("GET", "/")
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
   private val messageApi = new DefaultMessagesApi(env, configuration, new DefaultLangs(configuration))
   private val appConfig = new AppConfig(configuration, env)
+  private val service = mock[AdviceService]
   private implicit val mat: Materializer = fakeApplication.materializer
-  private val controller = new IndexController(messageApi, appConfig)
+
+  private def controller(advice: Advice) = new ConfirmationController(SubmittedAnswers(advice), service, messageApi, appConfig)
 
   "GET /" should {
-    "return 200" in {
-      val result = await(controller.get(fakeRequest))
-      status(result) shouldBe Status.OK
-    }
 
-    "return HTML" in {
-      val result = await(controller.get(fakeRequest))
+    "return 200" in {
+      val advice = Advice(id = "id", reference = Some("ref"))
+
+      val result = await(controller(advice).get(getRequestWithCSRF))
+
+      status(result) shouldBe Status.OK
       contentType(result) shouldBe Some("text/html")
       charset(result) shouldBe Some("utf-8")
-      bodyOf(result) should include("index-heading")
+      bodyOf(result) should include("confirmation-heading")
     }
-
   }
 }

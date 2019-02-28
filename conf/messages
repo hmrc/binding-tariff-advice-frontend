@@ -6,3 +6,86 @@ index.content3 = know how it is packages
 index.content4 = upload photographs, manuals, brochures or technical specifications where appropriate
 index.content5 = Collect this information before you start. You will not be able to save this form and return to it later.
 index.button = Continue
+
+contact_details.heading = What are your contact details?
+contact_details.form.full_name = Full name
+contact_details.form.full_name.required = Full name is required
+contact_details.form.email = Email address
+contact_details.form.email.required = Email address is required
+contact_details.form.email.valid = Email address must be valid
+contact_details.button = Continue
+
+good_details.heading = Detailed description of your item
+good_details.content1 = The more detailed your description, the faster we will be able to classify your item.
+good_details.form.item_name = Item name
+good_details.form.item_name.required = Item name is required
+good_details.form.description = Description
+good_details.form.description.required = Description is required
+good_details.form.description_hint1 = This may include:
+good_details.form.description_hint2 = what it is used for
+good_details.form.description_hint3 = what it is made from, including all materials, parts or ingredients
+good_details.form.description_hint4 = how it is made, including all manufacturing processes
+good_details.form.description_hint5 = how it  works
+good_details.form.description_hint6 = how it  is packaged, including all materials
+good_details.button = Continue
+
+supporting_documents.none.heading = Do you want to upload any supporting documents?
+supporting_documents.some.heading = You have uploaded {0} supporting documents
+supporting_documents.content1 = The things we need to give you accurate commodity code advice are:
+supporting_documents.content2 = ingredients list for food and drink items
+supporting_documents.content3 = technical specifications
+supporting_documents.content4 = lists of materials
+supporting_documents.content5 = images of the item
+supporting_documents.content6 = images of packaging
+supporting_documents.form.state.required = Your choice is required
+supporting_documents.form.state = Do you want to upload another document?
+supporting_documents.button = Continue
+
+upload_supporting_documents.heading = Upload any supporting photographs and documents
+upload_supporting_documents.content1 = You can upload one file at a time
+upload_supporting_documents.content2 = Each file must be:
+upload_supporting_documents.content3 = a pdf, doc, docx, png, jpg, jpeg or txt file
+upload_supporting_documents.content4 = 10MB or smaller
+upload_supporting_documents.form.file = Upload files
+upload_supporting_documents.button = Upload
+
+supporting_information.heading = Do you need to enter any other supporting information?
+supporting_information.form.state = Select yes if you want to enter any supporting information
+supporting_information.form.state.required = Your choice is required
+supporting_information.button = Continue
+
+supporting_information_details.heading = What is the information you want to provide?
+supporting_information_details.form.value =
+supporting_information_details.form.value.required = Supporting information is required
+supporting_information_details.button = Continue
+
+check_your_answers.heading = Check your answers before sending your application
+check_your_answers.section1.heading = Your contact details
+check_your_answers.section1.sub_heading1 = Name
+check_your_answers.section1.sub_heading2 = Email
+check_your_answers.section2.heading = Information about your item
+check_your_answers.section2.sub_heading1 = Item name
+check_your_answers.section2.sub_heading2 = Item description
+check_your_answers.section2.sub_heading3 = Supporting Documents
+check_your_answers.section3.heading = Other information
+check_your_answers.section3.sub_heading1 = Supporting information
+check_your_answers.button = Continue
+check_your_answers.none = None
+
+confirmation.heading = Form complete
+confirmation.content1 = Your form reference
+confirmation.content2 = What happens next
+confirmation.content3 = Your form will be received by the HMRC classification team. They will email you within 3 to 5 days with advice about your commodity code.
+
+supporting_document.heading = This file is unavailable
+supporting_document.content1 = It failed to process, this could be because a virus was found.
+supporting_document.content2 = It is still processing. It should be available in the next few minutes.
+supporting_document.content3 = It doesnt exist.
+
+session_expired.heading = For your security, this service has been reset
+session_expired.guidance = To start a new advice request click the button below
+session_expired.link = Start again
+
+error.summary.title = There is a problem
+
+site.back = Back

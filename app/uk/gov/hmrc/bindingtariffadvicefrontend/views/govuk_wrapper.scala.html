@@ -46,7 +46,7 @@
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some("binding-tariff-advice-frontend"),
+      navTitle = Some("Binding Tariff Advice"),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))
@@ -66,11 +66,22 @@
 @footerTop = {}
 @footerLinks = {}
 
+@phaseBanner = {
+@uiLayouts.betaBanner(
+    userLoggedIn = false,
+    betaFeedbackUrl = appConfig.betaFeedbackUrl,
+    betaFeedbackUnauthenticatedUrl = appConfig.betaFeedbackUnauthenticatedUrl,
+    showFeedbackLinkInBetaBanner = true
+)
+}
+
 @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = HtmlFormat.empty,
+      betaBanner = phaseBanner,
       includeGridWrapper = false,
-      serviceInfoContent = Some(serviceInfoContent))
+      includeHMRCBranding = false,
+      serviceInfoContent = Some(serviceInfoContent)
+    )
 }
 
 @mainContentHeader = {
