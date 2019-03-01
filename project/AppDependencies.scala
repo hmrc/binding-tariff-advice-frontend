@@ -8,11 +8,11 @@ object AppDependencies {
     "uk.gov.hmrc"               %% "govuk-template"             % "5.29.0-play-25",
     "uk.gov.hmrc"               %% "play-ui"                    % "7.32.0-play-25",
     "uk.gov.hmrc"               %% "play-json-union-formatter"  % "1.5.0",
-    "uk.gov.hmrc"               %% "simple-reactivemongo"       % "7.12.0-play-25",
+    "uk.gov.hmrc"               %% "simple-reactivemongo"       % "7.14.0-play-25",
     "io.megl"                   %% "play-json-extra"            % "2.4.3",
     "org.apache.httpcomponents" %  "httpclient"                 % "4.5.7",
     "org.apache.httpcomponents" %  "httpmime"                   % "4.5.7",
-    "commons-validator"         % "commons-validator"           % "1.6"
+    "commons-validator"         %  "commons-validator"          % "1.6"
   )
 
   val scope = "test, it"
@@ -28,7 +28,7 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "hmrctest"                 % "3.5.0-play-25" % scope,
     "uk.gov.hmrc"             %% "http-verbs-test"          % "1.3.0"         % scope,
     "uk.gov.hmrc"             %% "service-integration-test" % "0.5.0-play-25" % scope,
-    "uk.gov.hmrc"             %% "reactivemongo-test"       % "4.8.0-play-25" % scope
+    "uk.gov.hmrc"             %% "reactivemongo-test"       % "4.9.0-play-25" % scope
   )
 
 }
