@@ -1,7 +1,9 @@
 
-# binding-tariff-advice-frontend
+# Binding Tariff Advice Frontend
 
-This is a placeholder README.md for a new repository
+A Form for users who need Product Commodity Code Classification Advice.
+
+The form is posted to the HMRC Classification team (Southend) to review
 
 ### License
 
