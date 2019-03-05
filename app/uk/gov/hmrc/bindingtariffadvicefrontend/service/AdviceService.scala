@@ -48,6 +48,7 @@ class AdviceService @Inject()(repository: AdviceRepository,
     val goodDetails = advice.goodDetails.getOrElse(throw new IllegalArgumentException("Cannot Submit without Good Details"))
     val supportingInfo = advice.supportingInformation.getOrElse("")
     val reference = advice.id.substring(32).toUpperCase()
+    Logger.info(s"Submitting application with reference [$reference]")
     for {
       updated <- update(advice.copy(reference = Some(reference)))
       documents <- Future.sequence(updated.supportingDocuments.map(doc => fileService.publish(doc)))
@@ -62,6 +63,8 @@ class AdviceService @Inject()(repository: AdviceRepository,
         supportingDocuments = documentURLs.mkString("|"),
         supportingInformation = supportingInfo
       )
+
+      _ = Logger.info(s"Sending email [to:${appConfig.submissionMailbox},reference:${parameters.reference}]")
       email = AdviceRequestEmail(Seq(appConfig.submissionMailbox), parameters)
       _ <- emailConnector.send(email) recover loggingAnError // TODO remove this recover block once Digital Contact merge https://github.com/hmrc/hmrc-email-renderer/pull/300
     } yield updated
