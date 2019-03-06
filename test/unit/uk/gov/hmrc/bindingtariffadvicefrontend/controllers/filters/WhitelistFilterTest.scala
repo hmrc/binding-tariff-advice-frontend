@@ -39,8 +39,19 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
     given(header.headers) willReturn headers
     given(block.apply(any[RequestHeader])) willReturn Future.successful(Results.Ok)
 
+    "pass through if endpoint excluded" in {
+      given(headers.get("True-Client-IP")) willReturn None
+      given(header.uri) willReturn "/ping/ping"
+      given(header.method) willReturn "GET"
+      given(config.whitelist) willReturn Some(Set("ip"))
+
+      await(filter(block)(header)) shouldBe Results.Ok
+    }
+
     "pass through if disabled" in {
       given(headers.get("True-Client-IP")) willReturn None
+      given(header.uri) willReturn "/"
+      given(header.method) willReturn "GET"
       given(config.whitelist) willReturn None
 
       await(filter(block)(header)) shouldBe Results.Ok
@@ -48,6 +59,8 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
 
     "pass through if user has valid IP" in {
       given(headers.get("True-Client-IP")) willReturn Some("ip")
+      given(header.uri) willReturn "/"
+      given(header.method) willReturn "GET"
       given(config.whitelist) willReturn Some(Set("ip"))
 
       await(filter(block)(header)) shouldBe Results.Ok
@@ -55,6 +68,8 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
 
     "filter if user has no IP" in {
       given(headers.get("True-Client-IP")) willReturn None
+      given(header.uri) willReturn "/"
+      given(header.method) willReturn "GET"
       given(config.whitelist) willReturn Some(Set("ip"))
 
       await(filter(block)(header)) shouldBe Results.Forbidden
@@ -62,6 +77,8 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
 
     "filter if user has invalid IP" in {
       given(headers.get("True-Client-IP")) willReturn Some("unknown-ip")
+      given(header.uri) willReturn "/"
+      given(header.method) willReturn "GET"
       given(config.whitelist) willReturn Some(Set("ip"))
 
       await(filter(block)(header)) shouldBe Results.Forbidden

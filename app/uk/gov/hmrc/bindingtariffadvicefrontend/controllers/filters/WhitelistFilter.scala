@@ -18,6 +18,7 @@ package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.filters
 
 import akka.stream.Materializer
 import com.google.inject.Inject
+import play.api.http.HttpVerbs
 import play.api.mvc._
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 
@@ -26,14 +27,20 @@ import scala.concurrent.Future
 class WhitelistFilter @Inject()(appConfig: AppConfig,
                       override val mat: Materializer) extends Filter {
 
+  private val excluded: Set[Call] = Set(Call(HttpVerbs.GET, "/ping/ping"))
+
   override def apply(f: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
-    appConfig.whitelist match {
-      case Some(addresses: Set[String]) =>
-        rh.headers.get("True-Client-IP") match {
-          case Some(ip: String) if addresses.contains(ip) => f(rh)
-          case _ => Future.successful(Results.Forbidden)
-        }
-      case _ => f(rh)
+    if(excluded.contains(Call(rh.method, rh.uri))) {
+      f(rh)
+    } else {
+      appConfig.whitelist match {
+        case Some(addresses: Set[String]) =>
+          rh.headers.get("True-Client-IP") match {
+            case Some(ip: String) if addresses.contains(ip) => f(rh)
+            case _ => Future.successful(Results.Forbidden)
+          }
+        case _ => f(rh)
+      }
     }
   }
 }
