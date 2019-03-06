@@ -16,11 +16,25 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers.filters
 
+import akka.stream.Materializer
 import com.google.inject.Inject
-import play.api.http.DefaultHttpFilters
-import uk.gov.hmrc.play.bootstrap.filters.FrontendFilters
+import play.api.mvc._
+import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 
-class Filters @Inject()(sessionIdFilter: SessionIdFilter,
-                        frontendFilters: FrontendFilters,
-                        whitelistFilter: WhitelistFilter
-                       ) extends DefaultHttpFilters(frontendFilters.filters :+ sessionIdFilter :+ whitelistFilter : _*)
+import scala.concurrent.Future
+
+class WhitelistFilter @Inject()(appConfig: AppConfig,
+                      override val mat: Materializer) extends Filter {
+
+  override def apply(f: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
+    appConfig.whitelist match {
+      case Some(addresses: Set[String]) =>
+        rh.headers.get("True-Client-IP") match {
+          case Some(ip: String) if addresses.contains(ip) => f(rh)
+          case _ => Future.successful(Results.Forbidden)
+        }
+      case _ => f(rh)
+    }
+  }
+}
+

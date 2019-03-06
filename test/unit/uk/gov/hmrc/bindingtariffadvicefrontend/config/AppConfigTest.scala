@@ -83,4 +83,13 @@ class AppConfigTest extends UnitSpec with GuiceOneAppPerSuite {
   "Build 'Submission Mailbox'" in {
     appConfig("submission.mailbox" -> "hmrc@hmrc.gov.uk").submissionMailbox shouldBe "hmrc@hmrc.gov.uk"
   }
+
+  "Build whitelist" in {
+    appConfig(
+      "filters.whitelist.enabled" -> "true",
+      "filters.whitelist.ips" -> "ip1, ip2"
+    ).whitelist shouldBe Some(Set("ip1", "ip2"))
+
+    appConfig("filters.whitelist.enabled" -> "false").whitelist shouldBe None
+  }
 }
