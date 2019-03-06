@@ -22,6 +22,7 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import play.api.http.Status
 import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
@@ -64,7 +65,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpec {
     val advice = Advice("id")
 
     "return 303 and redirect'" in {
-      given(service.submit(refEq(advice))(any[HeaderCarrier])) willReturn Future.successful(advice)
+      given(service.submit(refEq(advice))(any[HeaderCarrier], any[Request[_]])) willReturn Future.successful(advice)
 
       val result = await(controller(advice).post()(postRequestWithCSRF))
       status(result) shouldBe Status.SEE_OTHER

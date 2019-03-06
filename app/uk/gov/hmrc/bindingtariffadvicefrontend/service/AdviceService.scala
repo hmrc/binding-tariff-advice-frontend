@@ -19,8 +19,10 @@ package uk.gov.hmrc.bindingtariffadvicefrontend.service
 import javax.inject.Inject
 import play.api.Logger
 import play.api.libs.Files.TemporaryFile
+import play.api.mvc.Request
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.connector.EmailConnector
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes
 import uk.gov.hmrc.bindingtariffadvicefrontend.model._
 import uk.gov.hmrc.bindingtariffadvicefrontend.repository.AdviceRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,7 +45,7 @@ class AdviceService @Inject()(repository: AdviceRepository,
 
   def upload(metadata: FileUpload, file: TemporaryFile)(implicit hc: HeaderCarrier): Future[FileUploaded] = fileService.upload(metadata, file)
 
-  def submit(advice: Advice)(implicit hc: HeaderCarrier): Future[Advice] = {
+  def submit(advice: Advice)(implicit hc: HeaderCarrier, request: Request[_]): Future[Advice] = {
     val contactDetails = advice.contactDetails.getOrElse(throw new IllegalArgumentException("Cannot Submit without Contact Details"))
     val goodDetails = advice.goodDetails.getOrElse(throw new IllegalArgumentException("Cannot Submit without Good Details"))
     val supportingInfo = advice.supportingInformation.getOrElse("")
@@ -52,7 +54,7 @@ class AdviceService @Inject()(repository: AdviceRepository,
     for {
       updated <- update(advice.copy(reference = Some(reference)))
       documents <- Future.sequence(updated.supportingDocuments.map(doc => fileService.publish(doc)))
-      documentURLs = documents.map(doc => uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes.ViewSupportingDocumentController.get(doc.id))
+      documentURLs = documents.map(doc => routes.ViewSupportingDocumentController.get(doc.id).absoluteURL())
 
       parameters = AdviceRequestEmailParameters(
         reference = reference,

@@ -24,18 +24,22 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.Writes
+import play.api.mvc.Request
+import play.api.test.FakeRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.connector.EmailConnector
 import uk.gov.hmrc.bindingtariffadvicefrontend.model._
 import uk.gov.hmrc.bindingtariffadvicefrontend.repository.AdviceRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes
 
 import scala.concurrent.Future
 
 class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
+  private implicit val request: Request[_] = FakeRequest()
 
   private val repository = mock[AdviceRepository]
   private val fileService = mock[FileService]
@@ -124,7 +128,7 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
         contactEmail = "contact-email",
         itemName = "item-name",
         itemDescription = "item-description",
-        supportingDocuments = "/supporting-documents/file-published-id1|/supporting-documents/file-published-id2",
+        supportingDocuments = routes.ViewSupportingDocumentController.get("file-published-id1").absoluteURL() + "|" + routes.ViewSupportingDocumentController.get("file-published-id2").absoluteURL(),
         supportingInformation = "supporting-info"
       )
     }
