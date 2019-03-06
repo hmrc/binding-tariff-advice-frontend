@@ -17,7 +17,6 @@
 package uk.gov.hmrc.bindingtariffadvicefrontend.controllers
 
 import akka.stream.Materializer
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.i18n.{DefaultLangs, DefaultMessagesApi}
 import play.api.test.FakeRequest
@@ -25,10 +24,10 @@ import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NewAnswers
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 
-class IndexControllerSpec extends UnitSpec with GuiceOneAppPerSuite {
+class IndexControllerSpec extends UnitSpec with WithFakeApplication {
 
   private val fakeRequest = FakeRequest("GET", "/")
   private val env = Environment.simple()
@@ -51,4 +50,5 @@ class IndexControllerSpec extends UnitSpec with GuiceOneAppPerSuite {
       bodyOf(result) should include("index-heading")
     }
   }
+
 }
