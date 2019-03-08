@@ -1,3 +1,5 @@
+title = Get commodity code advice from HMRC
+
 index.heading = Before you start
 index.content0 = To help us give accurate advice on your item''s commodity code you need to:
 index.content1 = know how it is made including a list of ingredients or parts
@@ -72,10 +74,11 @@ check_your_answers.section3.sub_heading1 = Supporting information
 check_your_answers.button = Continue
 check_your_answers.none = None
 
-confirmation.heading = Form complete
-confirmation.content1 = Your form reference
+confirmation.heading = Application complete
+confirmation.content1 = Your advice reference
 confirmation.content2 = What happens next
 confirmation.content3 = Your form will be received by the HMRC classification team. They will email you within 3 to 5 days with advice about your commodity code.
+confirmation.content4 = Include this advice reference with any correspondence with the Classification Team for this item.
 
 supporting_document.heading = This file is unavailable
 supporting_document.content1 = It failed to process, this could be because a virus was found.

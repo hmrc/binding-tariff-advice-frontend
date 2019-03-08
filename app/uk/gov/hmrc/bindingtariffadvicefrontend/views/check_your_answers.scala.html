@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode
 @()(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = "Binding Tariff Advice", bodyClasses = None) {
+@main_template(title = messages("title"), bodyClasses = None) {
 
  <h1 id="check_your_answers-heading" class="mb-4">@messages("check_your_answers.heading")</h1>
 

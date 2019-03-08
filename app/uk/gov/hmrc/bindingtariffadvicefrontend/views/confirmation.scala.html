@@ -23,16 +23,16 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode
 @(advice: Advice)(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = "Binding Tariff Advice", bodyClasses = None) {
-
- <h1 id="confirmation-heading" class="mb-4">@messages("confirmation.heading")</h1>
+@main_template(title = messages("title"), bodyClasses = None) {
 
  <div class="govuk-box-highlight">
+  <h1 id="confirmation-heading" class="mb-4">@messages("confirmation.heading")</h1>
   <h2 class="font-large">@messages("confirmation.content1")</h2>
   <p id="confirmation-reference" class="font-large bold">@advice.reference.get</p>
  </div>
 
  <h2>@messages("confirmation.content2")</h2>
  <p>@messages("confirmation.content3")</p>
+ <p>@messages("confirmation.content4")</p>
 
 }

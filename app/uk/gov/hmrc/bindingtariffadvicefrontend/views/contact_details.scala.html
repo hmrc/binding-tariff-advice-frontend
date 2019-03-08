@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode
 @(form: Form[ContactDetails], mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = "Binding Tariff Advice", bodyClasses = None) {
+@main_template(title = messages("title"), bodyClasses = None) {
 
  @helper.form(action = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes.ContactDetailsController.post(mode)) {
 

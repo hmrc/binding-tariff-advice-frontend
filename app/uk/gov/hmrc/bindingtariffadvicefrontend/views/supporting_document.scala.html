@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.model.ScanStatus
 @(fileSubmitted: Option[FileSubmitted])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = "Binding Tariff Advice", bodyClasses = None) {
+@main_template(title = messages("title"), bodyClasses = None) {
  <h1 id="supporting_document-heading">@messages("supporting_document.heading")</h1>
 
  @if(fileSubmitted.flatMap(_.scanStatus).contains(ScanStatus.FAILED)) {
