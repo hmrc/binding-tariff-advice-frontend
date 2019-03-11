@@ -16,52 +16,31 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.connector
 
-import akka.actor.ActorSystem
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import org.apache.http.HttpStatus
-import org.mockito.BDDMockito._
-import org.scalatest.mockito.MockitoSugar
-import play.api.Environment
-import play.api.libs.json.{Format, OFormat}
-import play.api.libs.ws.WSClient
-import uk.gov.hmrc.auth.core.retrieve.Email
-import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.{AdviceRequestEmail, AdviceRequestEmailParameters}
-import uk.gov.hmrc.bindingtariffadvicefrontend.{ResourceFiles, WiremockTestServer}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.audit.DefaultAuditConnector
-import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class EmailConnectorSpec extends UnitSpec
-  with WiremockTestServer with MockitoSugar with WithFakeApplication with ResourceFiles {
+class EmailConnectorSpec extends ConnectorTest {
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val configuration = mock[AppConfig]
-  private val actorSystem: ActorSystem = ActorSystem("test")
-  private val wsClient: WSClient = fakeApplication.injector.instanceOf[WSClient]
-  private val auditConnector = new DefaultAuditConnector(fakeApplication.configuration, fakeApplication.injector.instanceOf[Environment])
-  private val client = new DefaultHttpClient(fakeApplication.configuration, auditConnector, wsClient, actorSystem)
-  private val connector = new EmailConnector(configuration, client)
-
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-
-    given(configuration.emailUrl).willReturn(wireMockUrl)
-  }
+  private val connector = new EmailConnector(appConfig, standardHttpClient)
 
   "Connector 'Send'" should {
     "POST Email payload" in {
       stubFor(post(urlEqualTo("/hmrc/email"))
-          .withRequestBody(new EqualToJsonPattern(fromResource("advice_request_email-request.json"), true, false))
+        .withRequestBody(new EqualToJsonPattern(fromResource("advice_request_email-request.json"), true, false))
         .willReturn(aResponse()
           .withStatus(HttpStatus.SC_ACCEPTED))
       )
 
       val email = AdviceRequestEmail(Seq("user@domain.com"), AdviceRequestEmailParameters("ref", "name", "email", "item-name", "item-description", "supporting-docs", "supporting-info"))
 
-      await(connector.send(email))
+      await(connector.send(email)) shouldBe ((): Unit)
+
+      verify(
+        postRequestedFor(urlEqualTo("/hmrc/email"))
+          .withoutHeader("X-Api-Token")
+      )
     }
   }
 

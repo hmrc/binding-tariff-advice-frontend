@@ -83,6 +83,10 @@ class AppConfigTest extends UnitSpec with WithFakeApplication {
     appConfig("submission.mailbox" -> "hmrc@hmrc.gov.uk").submissionMailbox shouldBe "hmrc@hmrc.gov.uk"
   }
 
+  "Build API Token" in {
+    appConfig("auth.api-token" -> "token").apiToken shouldBe "token"
+  }
+
   "Build whitelist" in {
     appConfig(
       "filters.whitelist.enabled" -> "true",

@@ -36,8 +36,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 @Singleton
-class UpscanS3Connector @Inject()(appConfig: AppConfig, http: HttpClient)(
-  implicit executionContext: ExecutionContext) {
+class UpscanS3Connector @Inject()(appConfig: AppConfig, http: HttpClient)
+                                 (implicit executionContext: ExecutionContext) {
 
   def upload(template: FileUploadTemplate, file: TemporaryFile)
             (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
