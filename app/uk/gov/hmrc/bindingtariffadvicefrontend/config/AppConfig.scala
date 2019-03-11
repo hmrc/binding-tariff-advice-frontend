@@ -46,8 +46,9 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
   lazy val fileUploadMaxSize: Long = loadConfig("upload.max-size").toInt
   lazy val fileUploadMimeTypes: Seq[String] = loadConfig("upload.mime-types").split(",").map(_.trim)
   lazy val submissionMailbox: String = loadConfig("submission.mailbox")
-  lazy val whitelist: Option[Set[String]] =
-    if(getBoolean("filters.whitelist.enabled")) {
+  lazy val apiToken: String = loadConfig("auth.api-token")
+  lazy val whitelist: Option[Set[String]] = {
+    if (getBoolean("filters.whitelist.enabled")) {
       Some[Set[String]](
         getString("filters.whitelist.ips")
           .split(",")
@@ -56,5 +57,6 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
           .toSet
       )
     } else None
+  }
 
 }

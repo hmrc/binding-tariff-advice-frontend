@@ -18,16 +18,14 @@ package uk.gov.hmrc.bindingtariffadvicefrontend.connector
 
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
-import uk.gov.hmrc.bindingtariffadvicefrontend.model.{FileSubmitted, FileUpload, FileUploadTemplate, FileUploaded}
+import uk.gov.hmrc.bindingtariffadvicefrontend.model.{FileSubmitted, FileUpload, FileUploadTemplate}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class FileStoreConnector @Inject()(configuration: AppConfig,
-                                   http: HttpClient) {
+class FileStoreConnector @Inject()(configuration: AppConfig, http: AuthenticatedHttpClient) {
 
   def delete()(implicit hc: HeaderCarrier): Future[Unit] = {
     http.DELETE(s"${configuration.fileStoreUrl}/file").map(_ => ())
