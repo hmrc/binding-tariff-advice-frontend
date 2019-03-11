@@ -73,6 +73,6 @@ def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] = {
 routesImport += "uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action"
 
 // Coverage configuration
-coverageMinimum := 70
+coverageMinimum := 84
 coverageFailOnMinimum := true
 coverageExcludedPackages := "<empty>;com.kenshoo.play.metrics.*;prod.*;testOnlyDoNotUseInAppConf.*;app.*;uk.gov.hmrc.BuildInfo"
