@@ -39,10 +39,10 @@ class CheckYourAnswersController @Inject()(retrieveAnswers: RetrieveAnswersActio
     Future.successful(Ok(views.html.check_your_answers()))
   }
 
-  def post: Action[AnyContent] = retrieveAnswers.async {
-    implicit request: AnswersRequest[AnyContent] =>
-      adviceService.submit(request.advice)
-        .map(_ => Navigator.continue(routes.ConfirmationController.get()))
+  def post: Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
+    for {
+      _ <- adviceService.submit(request.advice)
+    } yield Navigator.continue(routes.ConfirmationController.get())
   }
 
 }

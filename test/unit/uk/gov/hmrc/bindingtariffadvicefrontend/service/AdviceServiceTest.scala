@@ -26,6 +26,7 @@ import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.Writes
 import play.api.mvc.Request
 import play.api.test.FakeRequest
+import uk.gov.hmrc.bindingtariffadvicefrontend.audit.{AdviceAuditPayload, AuditService}
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.connector.EmailConnector
 import uk.gov.hmrc.bindingtariffadvicefrontend.model._
@@ -45,11 +46,12 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
   private val fileService = mock[FileService]
   private val emailConnector = mock[EmailConnector]
   private val appConfig = mock[AppConfig]
-  private val service = new AdviceService(repository, fileService, emailConnector, appConfig)
+  private val auditService = mock[AuditService]
+  private val service = new AdviceService(repository, fileService, auditService, emailConnector, appConfig)
 
   override def afterEach(): Unit = {
     super.afterEach()
-    Mockito.reset(repository, fileService, emailConnector)
+    Mockito.reset(repository, fileService, emailConnector, auditService, appConfig)
   }
 
   "Get" should {
@@ -92,6 +94,8 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
   }
 
   "Submit" should {
+    // TODO: assert mocks are called
+
     val contactDetails = ContactDetails("contact-name", "contact-email")
     val goodDetails = GoodDetails("item-name", "item-description")
     val supportingDocument1 = SupportingDocument("file-id1", "file-name1", "file-type1", 0)
@@ -118,7 +122,10 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
 
       await(service.submit(advice)) shouldBe adviceUpdated
 
+      theAuditEvent shouldBe adviceUpdated
+
       theAdviceUpdated.reference shouldBe Some("XYZ")
+
       val email = theEmailSent
       email.to shouldBe Seq("mailbox")
       email.templateId shouldBe "digital_tariffs_advice_request"
@@ -166,6 +173,12 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
   private def theEmailSent: AdviceRequestEmail = {
     val captor: ArgumentCaptor[AdviceRequestEmail] = ArgumentCaptor.forClass(classOf[AdviceRequestEmail])
     verify(emailConnector).send(captor.capture())(any[HeaderCarrier], any[Writes[Any]])
+    captor.getValue
+  }
+
+  private def theAuditEvent: Advice = {
+    val captor: ArgumentCaptor[Advice] = ArgumentCaptor.forClass(classOf[Advice])
+    verify(auditService).auditBTIAdviceSubmission(captor.capture())(any[HeaderCarrier])
     captor.getValue
   }
 

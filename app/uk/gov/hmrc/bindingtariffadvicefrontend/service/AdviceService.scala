@@ -20,6 +20,7 @@ import javax.inject.Inject
 import play.api.Logger
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc.Request
+import uk.gov.hmrc.bindingtariffadvicefrontend.audit.AuditService
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.connector.EmailConnector
 import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes
@@ -32,6 +33,7 @@ import scala.concurrent.Future
 
 class AdviceService @Inject()(repository: AdviceRepository,
                               fileService: FileService,
+                              auditService: AuditService,
                               emailConnector: EmailConnector,
                               appConfig: AppConfig) {
 
@@ -51,9 +53,10 @@ class AdviceService @Inject()(repository: AdviceRepository,
     val supportingInfo = advice.supportingInformation.getOrElse("")
     val reference = advice.id.substring(32).toUpperCase()
     Logger.info(s"Submitting application with reference [$reference]")
+
     for {
       updated <- update(advice.copy(reference = Some(reference)))
-      documents <- Future.sequence(updated.supportingDocuments.map(doc => fileService.publish(doc)))
+      documents <- Future.sequence(updated.supportingDocuments.map(fileService.publish(_)))
       documentURLs = documents.map(doc => routes.ViewSupportingDocumentController.get(doc.id).absoluteURL())
 
       parameters = AdviceRequestEmailParameters(
@@ -69,10 +72,15 @@ class AdviceService @Inject()(repository: AdviceRepository,
       _ = Logger.info(s"Sending email [to:${appConfig.submissionMailbox},reference:${parameters.reference}]")
       email = AdviceRequestEmail(Seq(appConfig.submissionMailbox), parameters)
       _ <- emailConnector.send(email) recover loggingAnError // TODO remove this recover block once Digital Contact merge https://github.com/hmrc/hmrc-email-renderer/pull/300
+
+      _ = auditService.auditBTIAdviceSubmission(updated)
+
     } yield updated
+
   }
 
   private def loggingAnError: PartialFunction[Throwable, Unit] = {
     case e: Throwable => Logger.error("Email failed to send", e)
   }
+
 }
