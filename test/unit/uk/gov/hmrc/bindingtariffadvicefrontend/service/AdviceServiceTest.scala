@@ -94,8 +94,6 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
   }
 
   "Submit" should {
-    // TODO: assert mocks are called
-
     val contactDetails = ContactDetails("contact-name", "contact-email")
     val goodDetails = GoodDetails("item-name", "item-description")
     val supportingDocument1 = SupportingDocument("file-id1", "file-name1", "file-type1", 0)
