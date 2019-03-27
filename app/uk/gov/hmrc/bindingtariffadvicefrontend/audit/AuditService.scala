@@ -26,7 +26,6 @@ import uk.gov.hmrc.play.bootstrap.audit.DefaultAuditConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 @Singleton
 class AuditService @Inject()(auditConnector: DefaultAuditConnector) {
 
@@ -41,7 +40,7 @@ class AuditService @Inject()(auditConnector: DefaultAuditConnector) {
 
 case class AdviceAuditPayload
 (
-  reference: Option[String],
+  reference: String,
   contactDetails: Option[ContactDetails],
   goodDetails: Option[GoodDetails],
   supportingDocuments: Seq[String],
@@ -53,7 +52,7 @@ object AdviceAuditPayload {
 
   def from(advice: Advice): AdviceAuditPayload = {
     AdviceAuditPayload(
-      reference = advice.reference,
+      reference = advice.reference.getOrElse(throw new RuntimeException("Missing reference")),
       contactDetails = advice.contactDetails,
       goodDetails = advice.goodDetails,
       supportingDocuments = advice.supportingDocuments.map(_.id),
