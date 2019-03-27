@@ -26,7 +26,7 @@ import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.Writes
 import play.api.mvc.Request
 import play.api.test.FakeRequest
-import uk.gov.hmrc.bindingtariffadvicefrontend.audit.{AdviceAuditPayload, AuditService}
+import uk.gov.hmrc.bindingtariffadvicefrontend.audit.AuditService
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.connector.EmailConnector
 import uk.gov.hmrc.bindingtariffadvicefrontend.model._
