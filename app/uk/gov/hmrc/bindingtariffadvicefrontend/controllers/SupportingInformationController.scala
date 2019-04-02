@@ -45,14 +45,14 @@ class SupportingInformationController @Inject()(retrieveAnswers: RetrieveAnswers
 
   def post(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
     def onError: Form[Boolean] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.supporting_information(formWithErrors, mode)))
+      Future.successful(Ok(views.html.supporting_information(formWithErrors, mode)))
     }
 
     def onSuccess: Boolean => Future[Result] = {
       case true => Future.successful(Redirect(routes.SupportingInformationDetailsController.get(mode)))
       case false => adviceService
-          .update(request.advice.copy(supportingInformation = None))
-            .map(_ => Redirect(routes.CheckYourAnswersController.get()))
+        .update(request.advice.copy(supportingInformation = None))
+        .map(_ => Redirect(routes.CheckYourAnswersController.get()))
     }
 
     form.bindFromRequest.fold(onError, onSuccess)

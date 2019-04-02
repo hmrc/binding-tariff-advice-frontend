@@ -38,24 +38,22 @@ class ContactDetailsController @Inject()(retrieveAnswers: RetrieveAnswersAction,
                                          override val messagesApi: MessagesApi,
                                          implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async {
-    implicit request: AnswersRequest[AnyContent] =>
-      val form: Form[ContactDetails] = request.advice.contactDetails.map(ContactDetailsForm.form.fill).getOrElse(ContactDetailsForm.form)
-      Future.successful(Ok(views.html.contact_details(form, mode)))
+  def get(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
+    val form: Form[ContactDetails] = request.advice.contactDetails.map(ContactDetailsForm.form.fill).getOrElse(ContactDetailsForm.form)
+    Future.successful(Ok(views.html.contact_details(form, mode)))
   }
 
-  def post(implicit mode: Mode): Action[AnyContent] = retrieveAnswers.async {
-    implicit request: AnswersRequest[AnyContent] =>
-      def onError: Form[ContactDetails] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.contact_details(formWithErrors, mode)))
-      }
+  def post(implicit mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
+    def onError: Form[ContactDetails] => Future[Result] = formWithErrors => {
+      Future.successful(Ok(views.html.contact_details(formWithErrors, mode)))
+    }
 
-      def onSuccess: ContactDetails => Future[Result] = contactDetails => {
-        val updated = request.advice.copy(contactDetails = Some(contactDetails))
-        adviceService.update(updated).map(_ => Navigator.redirect(routes.GoodDetailsController.get(mode)))
-      }
+    def onSuccess: ContactDetails => Future[Result] = contactDetails => {
+      val updated = request.advice.copy(contactDetails = Some(contactDetails))
+      adviceService.update(updated).map(_ => Navigator.redirect(routes.GoodDetailsController.get(mode)))
+    }
 
-      ContactDetailsForm.form.bindFromRequest.fold(onError, onSuccess)
+    ContactDetailsForm.form.bindFromRequest.fold(onError, onSuccess)
   }
 
 }

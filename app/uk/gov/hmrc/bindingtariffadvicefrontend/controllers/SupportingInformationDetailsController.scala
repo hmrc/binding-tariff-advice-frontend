@@ -46,12 +46,12 @@ class SupportingInformationDetailsController @Inject()(retrieveAnswers: Retrieve
 
   def post(mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
     def onError: Form[String] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.supporting_information_details(formWithErrors, mode)))
+      Future.successful(Ok(views.html.supporting_information_details(formWithErrors, mode)))
     }
 
     def onSuccess: String => Future[Result] = supportingInformation => {
-        val updated = request.advice.copy(supportingInformation = Some(supportingInformation))
-        adviceService.update(updated).map(_ => Redirect(routes.CheckYourAnswersController.get()))
+      val updated = request.advice.copy(supportingInformation = Some(supportingInformation))
+      adviceService.update(updated).map(_ => Redirect(routes.CheckYourAnswersController.get()))
     }
 
     form.bindFromRequest.fold(onError, onSuccess)

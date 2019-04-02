@@ -45,7 +45,7 @@ class SupportingDocumentsController @Inject()(retrieveAnswers: RetrieveAnswersAc
 
   def post(implicit mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
     def onError: Form[Boolean] => Future[Result] = (formWithErrors: Form[Boolean]) => {
-        Future.successful(Ok(views.html.supporting_documents(formWithErrors, mode)))
+      Future.successful(Ok(views.html.supporting_documents(formWithErrors, mode)))
     }
 
     def onSuccess: Boolean => Future[Result] = {

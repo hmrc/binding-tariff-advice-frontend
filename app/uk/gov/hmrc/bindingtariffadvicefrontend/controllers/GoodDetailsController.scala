@@ -43,18 +43,17 @@ class GoodDetailsController @Inject()(retrieveAnswers: RetrieveAnswersAction,
     Future.successful(Ok(views.html.good_details(form, mode)))
   }
 
-  def post(implicit mode: Mode): Action[AnyContent] = retrieveAnswers.async {
-    implicit request: AnswersRequest[AnyContent] =>
-      def onError: Form[GoodDetails] => Future[Result] = formWithErrors => {
-        Future.successful(Ok(views.html.good_details(formWithErrors, mode)))
-      }
+  def post(implicit mode: Mode): Action[AnyContent] = retrieveAnswers.async { implicit request: AnswersRequest[AnyContent] =>
+    def onError: Form[GoodDetails] => Future[Result] = formWithErrors => {
+      Future.successful(Ok(views.html.good_details(formWithErrors, mode)))
+    }
 
-      def onSuccess: GoodDetails => Future[Result] = goodDetails => {
-        val updated = request.advice.copy(goodDetails = Some(goodDetails))
-        adviceService.update(updated).map(_ => Navigator.redirect(routes.SupportingDocumentsController.get(mode)))
-      }
+    def onSuccess: GoodDetails => Future[Result] = goodDetails => {
+      val updated = request.advice.copy(goodDetails = Some(goodDetails))
+      adviceService.update(updated).map(_ => Navigator.redirect(routes.SupportingDocumentsController.get(mode)))
+    }
 
-      GoodDetailsForm.form.bindFromRequest.fold(onError, onSuccess)
+    GoodDetailsForm.form.bindFromRequest.fold(onError, onSuccess)
   }
 
 }
