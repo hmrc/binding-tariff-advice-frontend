@@ -3,13 +3,15 @@ import sbt._
 
 object AppDependencies {
 
+  val httpComponentsVersion = "4.5.8"
+
   val compile = Seq(
     "commons-validator"         %  "commons-validator"          % "1.6",
     "io.megl"                   %% "play-json-extra"            % "2.4.3",
-    "org.apache.httpcomponents" %  "httpclient"                 % "4.5.7",
-    "org.apache.httpcomponents" %  "httpmime"                   % "4.5.7",
+    "org.apache.httpcomponents" %  "httpclient"                 % httpComponentsVersion,
+    "org.apache.httpcomponents" %  "httpmime"                   % httpComponentsVersion,
     "uk.gov.hmrc"               %% "bootstrap-play-25"          % "4.10.0",
-    "uk.gov.hmrc"               %% "govuk-template"             % "5.30.0-play-25",
+    "uk.gov.hmrc"               %% "govuk-template"             % "5.31.0-play-25",
     "uk.gov.hmrc"               %% "play-ui"                    % "7.38.0-play-25",
     "uk.gov.hmrc"               %% "play-json-union-formatter"  % "1.5.0",
     "uk.gov.hmrc"               %% "simple-reactivemongo"       % "7.16.0-play-25"
@@ -20,7 +22,7 @@ object AppDependencies {
   val test = Seq(
     "com.github.tomakehurst"  %  "wiremock"                 % "2.22.0"         % scope,
     "com.typesafe.play"       %% "play-test"                % current          % scope,
-    "org.mockito"             %  "mockito-core"             % "2.25.1"         % scope,
+    "org.mockito"             %  "mockito-core"             % "2.26.0"         % scope,
     "org.jsoup"               %  "jsoup"                    % "1.11.3"         % scope,
     "org.pegdown"             %  "pegdown"                  % "1.6.0"          % scope,
     "org.scalatest"           %% "scalatest"                % "3.0.4"          % scope,
