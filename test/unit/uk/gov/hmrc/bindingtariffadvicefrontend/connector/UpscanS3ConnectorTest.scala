@@ -25,7 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class UpscanS3ConnectorTest extends ConnectorTest {
 
-  private val connector = new UpscanS3Connector(appConfig, standardHttpClient)
+  private val connector = new UpscanS3Connector()
 
   "Upload" should {
 
