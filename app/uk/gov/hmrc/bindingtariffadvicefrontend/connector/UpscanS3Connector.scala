@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.connector
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.ContentType
@@ -26,17 +26,15 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.util.EntityUtils
 import play.api.Logger
 import play.api.libs.Files.TemporaryFile
-import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.FileUploadTemplate
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
+import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
-import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 @Singleton
-class UpscanS3Connector @Inject()()(implicit executionContext: ExecutionContext) {
+class UpscanS3Connector() {
 
   def upload(template: FileUploadTemplate, file: TemporaryFile)
             (implicit headerCarrier: HeaderCarrier): Future[Unit] = {

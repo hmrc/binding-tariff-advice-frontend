@@ -21,8 +21,6 @@ import play.api.http.Status
 import play.api.libs.Files.TemporaryFile
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.FileUploadTemplate
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class UpscanS3ConnectorTest extends ConnectorTest {
 
   private val connector = new UpscanS3Connector()
