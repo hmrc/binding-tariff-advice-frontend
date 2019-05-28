@@ -47,6 +47,7 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
   lazy val fileUploadMimeTypes: Seq[String] = loadConfig("upload.mime-types").split(",").map(_.trim)
   lazy val submissionMailbox: String = loadConfig("submission.mailbox")
   lazy val apiToken: String = loadConfig("auth.api-token")
+  lazy val host: String = loadConfig("host")
   lazy val whitelist: Option[Set[String]] = {
     if (getBoolean("filters.whitelist.enabled")) {
       Some[Set[String]](

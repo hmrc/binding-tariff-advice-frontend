@@ -55,9 +55,9 @@ class AdviceService @Inject()(repository: AdviceRepository,
     Logger.info(s"Submitting application with reference [$reference]")
 
     for {
-      updated <- update(advice.copy(reference = Some(reference)))
-      documents <- Future.sequence(updated.supportingDocuments.map(fileService.publish(_)))
-      documentURLs = documents.map(doc => routes.ViewSupportingDocumentController.get(doc.id).absoluteURL())
+      updated: Advice <- update(advice.copy(reference = Some(reference)))
+      documents: Seq[FileSubmitted] <- Future.sequence(updated.supportingDocuments.map(fileService.publish(_)))
+      documentURLs: Seq[String] = documents.map(doc => appConfig.host + routes.ViewSupportingDocumentController.get(doc.id).url)
 
       parameters = AdviceRequestEmailParameters(
         reference = reference,

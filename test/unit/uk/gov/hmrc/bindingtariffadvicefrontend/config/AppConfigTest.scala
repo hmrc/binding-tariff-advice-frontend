@@ -87,6 +87,10 @@ class AppConfigTest extends UnitSpec with WithFakeApplication {
     appConfig("auth.api-token" -> "token").apiToken shouldBe "token"
   }
 
+  "Build Host" in {
+    appConfig("host" -> "url").host shouldBe "url"
+  }
+
   "Build whitelist" in {
     appConfig(
       "filters.whitelist.enabled" -> "true",

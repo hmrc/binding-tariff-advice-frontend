@@ -29,11 +29,11 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.bindingtariffadvicefrontend.audit.AuditService
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.connector.EmailConnector
+import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes
 import uk.gov.hmrc.bindingtariffadvicefrontend.model._
 import uk.gov.hmrc.bindingtariffadvicefrontend.repository.AdviceRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.routes
 
 import scala.concurrent.Future
 
@@ -113,6 +113,7 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
 
     "Delegate to Repository" in {
       given(appConfig.submissionMailbox) willReturn "mailbox"
+      given(appConfig.host) willReturn "host"
       given(repository.update(any[Advice], refEq(false))) willReturn Future.successful(adviceUpdated)
       given(fileService.publish(refEq(supportingDocument1))(any[HeaderCarrier])) willReturn Future.successful(fileSubmitted1)
       given(fileService.publish(refEq(supportingDocument2))(any[HeaderCarrier])) willReturn Future.successful(fileSubmitted2)
@@ -133,7 +134,7 @@ class AdviceServiceTest extends UnitSpec with MockitoSugar with BeforeAndAfterEa
         contactEmail = "contact-email",
         itemName = "item-name",
         itemDescription = "item-description",
-        supportingDocuments = routes.ViewSupportingDocumentController.get("file-published-id1").absoluteURL() + "|" + routes.ViewSupportingDocumentController.get("file-published-id2").absoluteURL(),
+        supportingDocuments = "host" + routes.ViewSupportingDocumentController.get("file-published-id1").url + "|" + "host" + routes.ViewSupportingDocumentController.get("file-published-id2").url,
         supportingInformation = "supporting-info"
       )
     }
