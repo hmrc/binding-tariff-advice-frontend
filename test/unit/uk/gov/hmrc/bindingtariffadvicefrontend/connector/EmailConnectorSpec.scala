@@ -33,7 +33,11 @@ class EmailConnectorSpec extends ConnectorTest {
           .withStatus(HttpStatus.SC_ACCEPTED))
       )
 
-      val email = AdviceRequestEmail(Seq("user@domain.com"), AdviceRequestEmailParameters("ref", "name", "email", "item-name", "item-description", "supporting-docs", "supporting-info"))
+      val email = AdviceRequestEmail(
+        to = Seq("user@domain.com"),
+        replyToAddress = "reply-to@domain.com",
+        parameters = AdviceRequestEmailParameters("ref", "name", "email", "item-name", "item-description", "supporting-docs", "supporting-info")
+      )
 
       await(connector.send(email)) shouldBe ((): Unit)
 

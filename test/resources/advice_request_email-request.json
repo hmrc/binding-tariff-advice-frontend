@@ -1,5 +1,6 @@
 {
   "to": ["user@domain.com"],
+  "replyToAddress": "reply-to@domain.com",
   "parameters": {
     "reference": "ref",
     "contactName": "name",

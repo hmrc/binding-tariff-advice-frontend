@@ -70,7 +70,13 @@ class AdviceService @Inject()(repository: AdviceRepository,
       )
 
       _ = Logger.info(s"Sending email [to:${appConfig.submissionMailbox},reference:${parameters.reference}]")
-      email = AdviceRequestEmail(Seq(appConfig.submissionMailbox), parameters)
+
+      email = AdviceRequestEmail(
+        to = Seq(appConfig.submissionMailbox),
+        replyToAddress = contactDetails.email,
+        parameters = parameters
+      )
+
       _ <- emailConnector.send(email) recover loggingAnError // TODO remove this recover block once Digital Contact merge https://github.com/hmrc/hmrc-email-renderer/pull/300
 
       _ = auditService.auditBTIAdviceSubmission(updated)

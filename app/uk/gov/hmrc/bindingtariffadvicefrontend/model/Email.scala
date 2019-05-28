@@ -39,6 +39,7 @@ object Email {
 case class AdviceRequestEmail
 (
   override val to: Seq[String],
+  replyToAddress: String,
   override val parameters: AdviceRequestEmailParameters
 ) extends Email[AdviceRequestEmailParameters] {
   override val templateId: String = EmailType.ADVICE_REQUEST.toString
