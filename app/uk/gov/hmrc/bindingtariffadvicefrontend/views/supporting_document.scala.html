@@ -30,7 +30,7 @@
   <p id="supporting_document-scan_failed">@messages("supporting_document.content1")</p>
  }
 
- @if(fileSubmitted.flatMap(_.scanStatus).isEmpty) {
+ @if(fileSubmitted.exists(_.scanStatus.isEmpty)) {
   <p id="supporting_document-processing">@messages("supporting_document.content2")</p>
  }
 
