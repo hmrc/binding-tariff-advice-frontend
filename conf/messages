@@ -77,7 +77,7 @@ check_your_answers.none = None
 confirmation.heading = Application complete
 confirmation.content1 = Your advice reference
 confirmation.content2 = What happens next
-confirmation.content3 = Your form will be received by the HMRC classification team. They will email you within 3 to 5 days with advice about your commodity code.
+confirmation.content3 = Your form will be received by the HMRC classification team. They will email you within 5 working days with advice about your commodity code.
 confirmation.content4 = Include this advice reference with any correspondence with the Classification Team for this item.
 
 supporting_document.heading = This file is unavailable
