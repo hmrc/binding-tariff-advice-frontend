@@ -22,9 +22,11 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.duration.Duration
+import scala.util.Try
 
 @Singleton
 class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig {
+
 
   override protected def mode: Mode = environment.mode
 
@@ -46,6 +48,7 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
   lazy val fileUploadMaxSize: Long = loadConfig("upload.max-size").toInt
   lazy val fileUploadMimeTypes: Seq[String] = loadConfig("upload.mime-types").split(",").map(_.trim)
   lazy val submissionMailbox: String = loadConfig("submission.mailbox")
+  lazy val submissionEmailEnabled: Boolean = Try(getBoolean("submission.email.enabled")).getOrElse(true)
   lazy val apiToken: String = loadConfig("auth.api-token")
   lazy val host: String = loadConfig("host")
   lazy val whitelist: Option[Set[String]] = {

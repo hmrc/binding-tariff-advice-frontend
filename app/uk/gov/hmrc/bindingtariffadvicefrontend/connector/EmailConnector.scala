@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.connector
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, ProvidedBy, Provider, Provides}
 import javax.inject.Singleton
+import org.slf4j.LoggerFactory
 import play.api.libs.json.Writes
 import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.Email
@@ -27,12 +28,36 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@ProvidedBy(classOf[EmailConnectorProvider])
+trait EmailConnector{
+  def send[E >: Email[Any]](e: E)(implicit hc: HeaderCarrier, writes: Writes[E]): Future[Unit]
+}
+
+class EmailConnectorProvider @Inject()(appConfig:AppConfig,
+                             fakeEmailConnector: FakeEmailConnector,
+                             emailServiceConnector: EmailServiceConnector) extends Provider[EmailConnector] {
+  val logger = LoggerFactory.getLogger(classOf[EmailConnectorProvider])
+
+  override def get(): EmailConnector = {
+    if (appConfig.submissionEmailEnabled) emailServiceConnector
+    else fakeEmailConnector
+  }
+}
+
 @Singleton
-class EmailConnector @Inject()(configuration: AppConfig, client: HttpClient) {
+class EmailServiceConnector @Inject()(configuration: AppConfig, client: HttpClient) extends EmailConnector {
 
   def send[E >: Email[Any]](e: E)(implicit hc: HeaderCarrier, writes: Writes[E]): Future[Unit] = {
     val url = s"${configuration.emailUrl}/hmrc/email"
     client.POST(url = url, body = e).map(_ => ())
   }
+}
 
+@Singleton
+class FakeEmailConnector() extends EmailConnector {
+  val logger = LoggerFactory.getLogger(classOf[FakeEmailConnector])
+
+  override def send[E >: Email[Any]](e: E)(implicit hc: HeaderCarrier, writes: Writes[E]): Future[Unit] = {
+    Future {logger.info("Email requested but not sent")}
+  }
 }

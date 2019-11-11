@@ -19,13 +19,14 @@ package uk.gov.hmrc.bindingtariffadvicefrontend.connector
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import org.apache.http.HttpStatus
+import org.mockito.Mockito.when
+import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 import uk.gov.hmrc.bindingtariffadvicefrontend.model.{AdviceRequestEmail, AdviceRequestEmailParameters}
 
 class EmailConnectorSpec extends ConnectorTest {
+  "Real Connector 'Send'" should {
+    val emailServiceConnector = new EmailServiceConnector(appConfig, standardHttpClient)
 
-  private val connector = new EmailConnector(appConfig, standardHttpClient)
-
-  "Connector 'Send'" should {
     "POST Email payload" in {
       stubFor(post(urlEqualTo("/hmrc/email"))
         .withRequestBody(new EqualToJsonPattern(fromResource("advice_request_email-request.json"), true, false))
@@ -39,13 +40,42 @@ class EmailConnectorSpec extends ConnectorTest {
         parameters = AdviceRequestEmailParameters("ref", "name", "email", "item-name", "item-description", "supporting-docs", "supporting-info")
       )
 
-      await(connector.send(email)) shouldBe ((): Unit)
+      await(emailServiceConnector.send(email))
 
       verify(
         postRequestedFor(urlEqualTo("/hmrc/email"))
           .withoutHeader("X-Api-Token")
       )
     }
+  }
+
+  "Fake Connector 'Send'" should {
+    val fakeConnector = new FakeEmailConnector()
+
+    "Not POST Email payload" in {
+
+      resetAllRequests()
+
+      val email = AdviceRequestEmail(
+        to = Seq("user@domain.com"),
+        replyToAddress = "reply-to@domain.com",
+        parameters = AdviceRequestEmailParameters("ref", "name", "email", "item-name", "item-description", "supporting-docs", "supporting-info")
+      )
+
+      await(fakeConnector.send(email))
+      getAllServeEvents.size() shouldBe(0)
+    }
+  }
+
+  "Provider provides the correct instance based on config" in {
+    val mockConfig = mock[AppConfig]
+    when(mockConfig.submissionEmailEnabled).thenReturn(false).thenReturn(true)
+    val OUT = new EmailConnectorProvider(mockConfig, new FakeEmailConnector(), new EmailServiceConnector(mockConfig, standardHttpClient))
+
+    val result1 = OUT.get()
+    result1 shouldBe a[FakeEmailConnector]
+    val result2 = OUT.get()
+    result2 shouldBe a[EmailServiceConnector]
   }
 
 }
