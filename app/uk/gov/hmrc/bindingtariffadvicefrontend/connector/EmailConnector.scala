@@ -39,8 +39,13 @@ class EmailConnectorProvider @Inject()(appConfig:AppConfig,
   val logger = LoggerFactory.getLogger(classOf[EmailConnectorProvider])
 
   override def get(): EmailConnector = {
-    if (appConfig.submissionEmailEnabled) emailServiceConnector
-    else fakeEmailConnector
+    if (appConfig.submissionEmailEnabled) {
+      logger.info("Using the email service to send emails")
+      emailServiceConnector
+    } else {
+      logger.warn("Using a fake emails service. Emails will not be sent")
+      fakeEmailConnector
+    }
   }
 }
 
