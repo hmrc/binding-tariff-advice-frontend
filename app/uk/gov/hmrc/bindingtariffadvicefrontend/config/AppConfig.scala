@@ -70,7 +70,10 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
   lazy val fileUploadMaxSize: Long = loadConfig("upload.max-size").toInt
   lazy val fileUploadMimeTypes: Seq[String] = loadConfig("upload.mime-types").split(",").map(_.trim)
   lazy val submissionMailbox: String = loadConfig("submission.mailbox")
-  lazy val submissionEmailEnabled: Boolean = Try(getBoolean("submission.email.enabled")).getOrElse(true)
+  lazy val submissionEmailEnabled: Boolean = Try(getBoolean("submission.email.enabled")).recover {case ex => {
+    logger.error("Failed to configure submission email. defaulting to true", ex)
+    true
+  }}.get
   lazy val apiToken: String = loadConfig("auth.api-token")
   lazy val host: String = loadConfig("host")
   lazy val whitelist: Option[Set[String]] = {
