@@ -34,16 +34,17 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
 
   def logConfigValues() = {
     @tailrec
-    def buildLogMessage(keys: List[String], f: String => Any, current: String): String = {
+    def buildLogMessage(keys: List[String], f: String => String, current: String): String = {
       keys match {
         case Nil => current
-        case head :: tail => buildLogMessage(tail, f, s"${current}\r\n ${head} =  ${f(head)}")
+        case head :: tail if head.startsWith("submission") => buildLogMessage(tail, f, s"${current}\r\n ${head} =  ${f(head)}")
+        case _ :: tail => buildLogMessage(tail, f, current)
       }
     }
 
     def key2String(key: String): String = {
       val configValue = runModeConfiguration.underlying.getValue(key)
-      configValue.unwrapped.toString
+      configValue.toString
     }
     logger.info(buildLogMessage(runModeConfiguration.keys.toList, key2String, ""))
   }
