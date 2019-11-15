@@ -16,40 +16,17 @@
 
 package uk.gov.hmrc.bindingtariffadvicefrontend.config
 
-import com.typesafe.config.ConfigValueType
 import javax.inject.{Inject, Singleton}
 import org.slf4j.LoggerFactory
 import play.api.Mode.Mode
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
-
-import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 import scala.util.Try
 
 @Singleton
 class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig {
-
   val logger = LoggerFactory.getLogger(classOf[AppConfig])
-
-  def logConfigValues() = {
-    @tailrec
-    def buildLogMessage(keys: List[String], f: String => String, current: String): String = {
-      keys match {
-        case Nil => current
-        case head :: tail if head.startsWith("submission") => buildLogMessage(tail, f, s"${current}\r\n ${head} =  ${f(head)}")
-        case _ :: tail => buildLogMessage(tail, f, current)
-      }
-    }
-
-    def key2String(key: String): String = {
-      val configValue = runModeConfiguration.underlying.getValue(key)
-      configValue.toString
-    }
-    logger.info(buildLogMessage(runModeConfiguration.keys.toList, key2String, ""))
-  }
-
-  val init = logConfigValues()
 
   override protected def mode: Mode = environment.mode
 
@@ -72,7 +49,7 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
   lazy val fileUploadMimeTypes: Seq[String] = loadConfig("upload.mime-types").split(",").map(_.trim)
   lazy val submissionMailbox: String = loadConfig("submission.mailbox")
   lazy val submissionEmailEnabled: Boolean = Try(getBoolean("submission.email.enabled")).recover {case ex => {
-    logger.error("Failed to configure submission email. defaulting to true", ex)
+    logger.error("Failed to configure submission email. defaulting to sending emails", ex)
     true
   }}.get
   lazy val apiToken: String = loadConfig("auth.api-token")
