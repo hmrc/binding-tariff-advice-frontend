@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.main_template
-@import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.forms.{input_text, input_textarea, input_textarea_no_hint}
+@import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.forms.{input_text, input_textarea, input_textarea_html_label}
 @import uk.gov.hmrc.bindingtariffadvicefrontend.model.GoodDetails
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.forms.error_summary
 @import uk.gov.hmrc.bindingtariffadvicefrontend.model.GoodDetails
@@ -55,7 +55,7 @@
    label = messages("good_details.form.item_name")
   )
 
-  @input_textarea_no_hint(
+  @input_textarea_html_label(
    field = form("description"),
    label = descriptionHint,
    hint = None
