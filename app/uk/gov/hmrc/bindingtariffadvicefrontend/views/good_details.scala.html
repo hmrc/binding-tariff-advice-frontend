@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.main_template
-@import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.forms.{input_text, input_textarea}
+@import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.forms.{input_text, input_textarea, input_textarea_no_hint}
 @import uk.gov.hmrc.bindingtariffadvicefrontend.model.GoodDetails
 @import uk.gov.hmrc.bindingtariffadvicefrontend.views.html.forms.error_summary
 @import uk.gov.hmrc.bindingtariffadvicefrontend.model.GoodDetails
@@ -25,7 +25,8 @@
 @(form: Form[GoodDetails], mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @descriptionHint = {
- <span>@messages("good_details.form.description_hint1")</span>
+ <p>@messages("good_details.form.description")</p>
+ <p>@messages("good_details.form.description_hint1")</p>
  <ul class="list list-bullet">
   <li>@messages("good_details.form.description_hint2")</li>
   <li>@messages("good_details.form.description_hint3")</li>
@@ -54,10 +55,10 @@
    label = messages("good_details.form.item_name")
   )
 
-  @input_textarea(
+  @input_textarea_no_hint(
    field = form("description"),
-   label = messages("good_details.form.description"),
-   hint = Some(descriptionHint)
+   label = descriptionHint,
+   hint = None
   )
 
   <button id="good_details-button" class="button" type="submit">@messages("good_details.button")</button>
