@@ -24,7 +24,6 @@
 
 @import uk.gov.hmrc.play.views.html.layouts
 
-
 @serviceInfoContent = {}
 
 @sidebar = {
@@ -33,9 +32,16 @@
     }
 }
 
+@aggregated_title = {
+  @title match {
+    case "" => {@messages("title").toString}
+    case _ => {@{title.toString} ++ " - " ++ @messages("title").toString}
+  }
+}
+
 
 @govuk_wrapper(appConfig = appConfig,
-               title = title,
+               title = aggregated_title.toString,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebar,

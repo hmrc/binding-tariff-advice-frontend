@@ -10,6 +10,7 @@ index.content5 = Collect this information before you start. You will not be able
 index.button = Continue
 
 contact_details.heading = What are your contact details?
+contact_details.title = What are your contact details?
 contact_details.form.full_name = Full name
 contact_details.form.full_name.required = Full name is required
 contact_details.form.email = Email address

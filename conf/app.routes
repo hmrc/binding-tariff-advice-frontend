@@ -12,14 +12,14 @@ GET        /change-contact-details              @uk.gov.hmrc.bindingtariffadvice
 POST       /changecontact-details               @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.ContactDetailsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode)
 
 
-GET        /good-details                        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
-POST       /good-details                        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
+GET        /detailed-description                @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
+POST       /detailed-description                @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
 GET        /change-good-details                 @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode)
 POST       /change-good-details                 @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.GoodDetailsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode)
 
 
-GET        /supporting-documents                @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
-POST       /supporting-documents                @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
+GET        /supporting-documents-photos         @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
+POST       /supporting-documents-photos         @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
 GET        /change-supporting-documents         @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode)
 POST       /change-supporting-documents         @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode)
 
@@ -28,8 +28,8 @@ POST       /supporting-documents/:id            @uk.gov.hmrc.bindingtariffadvice
 GET        /change-supporting-documents/:id     @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.SupportingDocumentsController.delete(id: String, mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode)
 
 
-GET        /upload-supporting-documents         @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
-POST       /upload-supporting-documents         @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
+GET        /upload-supporting-documents-photos  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
+POST       /upload-supporting-documents-photos  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.NormalMode)
 GET        /change-upload-supporting-documents  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.get(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode)
 POST       /change-upload-supporting-documents  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.UploadSupportingDocumentsController.post(mode: uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.Mode = uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode)
 
@@ -50,4 +50,4 @@ GET        /check-your-answers                  @uk.gov.hmrc.bindingtariffadvice
 POST       /check-your-answers                  @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.CheckYourAnswersController.post
 
 
-GET        /confirmation                        @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.ConfirmationController.get
+GET        /application-submitted               @uk.gov.hmrc.bindingtariffadvicefrontend.controllers.ConfirmationController.get
