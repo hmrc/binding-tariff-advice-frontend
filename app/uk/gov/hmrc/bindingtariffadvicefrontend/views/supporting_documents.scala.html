@@ -40,7 +40,7 @@
  </ul>
 }
 
-@main_template(title = messages("title"), bodyClasses = None) {
+@main_template(title = if(request.advice.supportingDocuments.isEmpty) messages("supporting_documents.none.title") else messages("supporting_documents.some.title", request.advice.supportingDocuments.size), bodyClasses = None) {
 
   @back_link()
 

@@ -35,7 +35,7 @@
 @aggregated_title = {
   @title match {
     case "" => {@messages("title").toString}
-    case _ => {@{title.toString} ++ " - " ++ @messages("title").toString}
+    case _ => {@title  -  @messages("title")}
   }
 }
 
