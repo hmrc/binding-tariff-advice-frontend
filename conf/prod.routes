@@ -1,6 +1,6 @@
 # Add all the application routes to the app.routes file
 
-->         /classification-advice      app.Routes
+->         /get-commodity-code-advice  app.Routes
 ->         /                           health.Routes
 ->         /template                   template.Routes
 

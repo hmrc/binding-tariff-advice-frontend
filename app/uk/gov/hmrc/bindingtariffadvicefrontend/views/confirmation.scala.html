@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.bindingtariffadvicefrontend.controllers.action.CheckMode
 @(advice: Advice)(implicit request: AnswersRequest[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = messages("title"), bodyClasses = None) {
+@main_template(title = messages("confirmation.title"), bodyClasses = None) {
 
  <div class="govuk-box-highlight">
   <h1 id="confirmation-heading" class="mb-4">@messages("confirmation.heading")</h1>

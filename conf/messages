@@ -1,6 +1,6 @@
-title = Get commodity code advice from HMRC
+title = Get commodity code advice from HMRC - GOV.UK
 
-index.heading = Before you start
+index.heading = Get commodity code advice from HMRC
 index.content0 = To help us give accurate advice on your item''s commodity code you need to:
 index.content1 = know how it is made including a list of ingredients or parts
 index.content2 = know what it is used for and how it works
@@ -10,6 +10,7 @@ index.content5 = Collect this information before you start. You will not be able
 index.button = Continue
 
 contact_details.heading = What are your contact details?
+contact_details.title = What are your contact details?
 contact_details.form.full_name = Full name
 contact_details.form.full_name.required = Full name is required
 contact_details.form.email = Email address
@@ -18,6 +19,7 @@ contact_details.form.email.valid = Email address must be valid
 contact_details.button = Continue
 
 good_details.heading = Detailed description of your item
+good_details.title = Detailed description of your item
 good_details.content1 = The more detailed your description, the faster we will be able to classify your item.
 good_details.form.item_name = Item name
 good_details.form.item_name.required = Item name is required
@@ -33,6 +35,8 @@ good_details.button = Continue
 
 supporting_documents.none.heading = Do you want to upload any supporting documents?
 supporting_documents.some.heading = You have uploaded {0} supporting documents
+supporting_documents.none.title = Do you want to upload any supporting documents?
+supporting_documents.some.title = You have uploaded {0} supporting documents
 supporting_documents.content1 = The things we need to give you accurate commodity code advice are:
 supporting_documents.content2 = ingredients list for food and drink items
 supporting_documents.content3 = technical specifications
@@ -43,7 +47,8 @@ supporting_documents.form.state.required = Your choice is required
 supporting_documents.form.state = Do you want to upload another document?
 supporting_documents.button = Continue
 
-upload_supporting_documents.heading = Upload any supporting photographs and documents
+upload_supporting_documents.heading = Upload any supporting documents or photos
+upload_supporting_documents.title = Upload any supporting documents or photos
 upload_supporting_documents.content1 = You can upload one file at a time
 upload_supporting_documents.content2 = Each file must be:
 upload_supporting_documents.content3 = a pdf, doc, docx, png, jpg, jpeg or txt file
@@ -52,16 +57,19 @@ upload_supporting_documents.form.file = Upload files
 upload_supporting_documents.button = Upload
 
 supporting_information.heading = Do you need to enter any other supporting information?
+supporting_information.title = Do you need to enter any other supporting information?
 supporting_information.form.state = Select yes if you want to enter any supporting information
 supporting_information.form.state.required = Your choice is required
 supporting_information.button = Continue
 
-supporting_information_details.heading = What is the information you want to provide?
+supporting_information_details.heading = What information do you want to provide?
+supporting_information_details.title = What information do you want to provide?
 supporting_information_details.form.value =
 supporting_information_details.form.value.required = Supporting information is required
 supporting_information_details.button = Continue
 
 check_your_answers.heading = Check your answers before sending your application
+check_your_answers.title = Check your answers
 check_your_answers.section1.heading = Your contact details
 check_your_answers.section1.sub_heading1 = Name
 check_your_answers.section1.sub_heading2 = Email
@@ -74,7 +82,8 @@ check_your_answers.section3.sub_heading1 = Supporting information
 check_your_answers.button = Continue
 check_your_answers.none = None
 
-confirmation.heading = Application complete
+confirmation.heading = Application submitted
+confirmation.title = Application submitted
 confirmation.content1 = Your advice reference
 confirmation.content2 = What happens next
 confirmation.content3 = Your form will be received by the HMRC classification team. They will email you within 5 working days with advice about your commodity code.
