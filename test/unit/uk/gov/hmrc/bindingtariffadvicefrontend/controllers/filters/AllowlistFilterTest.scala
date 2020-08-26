@@ -26,14 +26,14 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class WhitelistFilterTest extends UnitSpec with MockitoSugar {
+class AllowlistFilterTest extends UnitSpec with MockitoSugar {
 
   private val header = mock[RequestHeader]
   private val headers = mock[Headers]
   private val block = mock[RequestHeader => Future[Result]]
   private val mat = mock[Materializer]
   private val config = mock[AppConfig]
-  private val filter = new WhitelistFilter(config, mat)
+  private val filter = new AllowlistFilter(config, mat)
 
   "Filter" should {
     given(header.headers) willReturn headers
@@ -43,7 +43,7 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
       given(headers.get("True-Client-IP")) willReturn None
       given(header.uri) willReturn "/ping/ping"
       given(header.method) willReturn "GET"
-      given(config.whitelist) willReturn Some(Set("ip"))
+      given(config.allowlist) willReturn Some(Set("ip"))
 
       await(filter(block)(header)) shouldBe Results.Ok
     }
@@ -52,7 +52,7 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
       given(headers.get("True-Client-IP")) willReturn None
       given(header.uri) willReturn "/"
       given(header.method) willReturn "GET"
-      given(config.whitelist) willReturn None
+      given(config.allowlist) willReturn None
 
       await(filter(block)(header)) shouldBe Results.Ok
     }
@@ -61,7 +61,7 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
       given(headers.get("True-Client-IP")) willReturn Some("ip")
       given(header.uri) willReturn "/"
       given(header.method) willReturn "GET"
-      given(config.whitelist) willReturn Some(Set("ip"))
+      given(config.allowlist) willReturn Some(Set("ip"))
 
       await(filter(block)(header)) shouldBe Results.Ok
     }
@@ -70,7 +70,7 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
       given(headers.get("True-Client-IP")) willReturn None
       given(header.uri) willReturn "/"
       given(header.method) willReturn "GET"
-      given(config.whitelist) willReturn Some(Set("ip"))
+      given(config.allowlist) willReturn Some(Set("ip"))
 
       await(filter(block)(header)) shouldBe Results.Forbidden
     }
@@ -79,7 +79,7 @@ class WhitelistFilterTest extends UnitSpec with MockitoSugar {
       given(headers.get("True-Client-IP")) willReturn Some("unknown-ip")
       given(header.uri) willReturn "/"
       given(header.method) willReturn "GET"
-      given(config.whitelist) willReturn Some(Set("ip"))
+      given(config.allowlist) willReturn Some(Set("ip"))
 
       await(filter(block)(header)) shouldBe Results.Forbidden
     }

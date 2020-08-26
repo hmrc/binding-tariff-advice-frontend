@@ -91,12 +91,12 @@ class AppConfigTest extends UnitSpec with WithFakeApplication {
     appConfig("host" -> "url").host shouldBe "url"
   }
 
-  "Build whitelist" in {
+  "Build allowlist" in {
     appConfig(
-      "filters.whitelist.enabled" -> "true",
-      "filters.whitelist.ips" -> "ip1, ip2"
-    ).whitelist shouldBe Some(Set("ip1", "ip2"))
+      "filters.allowlist.enabled" -> "true",
+      "filters.allowlist.ips" -> "ip1, ip2"
+    ).allowlist shouldBe Some(Set("ip1", "ip2"))
 
-    appConfig("filters.whitelist.enabled" -> "false").whitelist shouldBe None
+    appConfig("filters.allowlist.enabled" -> "false").allowlist shouldBe None
   }
 }

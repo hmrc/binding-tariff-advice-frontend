@@ -54,10 +54,10 @@ class AppConfig @Inject()(val runModeConfiguration: Configuration, environment: 
   }}.get
   lazy val apiToken: String = loadConfig("auth.api-token")
   lazy val host: String = loadConfig("host")
-  lazy val whitelist: Option[Set[String]] = {
-    if (getBoolean("filters.whitelist.enabled")) {
+  lazy val allowlist: Option[Set[String]] = {
+    if (getBoolean("filters.allowlist.enabled")) {
       Some[Set[String]](
-        getString("filters.whitelist.ips")
+        getString("filters.allowlist.ips")
           .split(",")
           .map(_.trim)
           .filter(_.nonEmpty)
