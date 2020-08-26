@@ -24,8 +24,8 @@ import uk.gov.hmrc.bindingtariffadvicefrontend.config.AppConfig
 
 import scala.concurrent.Future
 
-class WhitelistFilter @Inject()(appConfig: AppConfig,
-                      override val mat: Materializer) extends Filter {
+class AllowlistFilter @Inject()(appConfig: AppConfig,
+                                override val mat: Materializer) extends Filter {
 
   private val excluded: Set[Call] = Set(Call(HttpVerbs.GET, "/ping/ping"))
 
@@ -33,7 +33,7 @@ class WhitelistFilter @Inject()(appConfig: AppConfig,
     if(excluded.contains(Call(rh.method, rh.uri))) {
       f(rh)
     } else {
-      appConfig.whitelist match {
+      appConfig.allowlist match {
         case Some(addresses: Set[String]) =>
           rh.headers.get("True-Client-IP") match {
             case Some(ip: String) if addresses.contains(ip) => f(rh)
